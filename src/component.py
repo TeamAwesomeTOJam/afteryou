@@ -107,10 +107,7 @@ class InputMovementComponent(object):
         
         if entity.dx != 0 or entity.dy != 0:
             direction = Vec2d(entity.dx, entity.dy)
-            entity.facing = int(((direction.get_angle() + 45) % 360) / 90)
-            entity.handle('play-animation', 'walk_%s' % (FACING[entity.facing],), True)
-        else:
-            entity.handle('play-animation', 'idle_%s' % (FACING[entity.facing],), True)           
+            entity.facing = int(((direction.get_angle() + 45) % 360) / 90)          
 
 
 class DrawComponent(object):
