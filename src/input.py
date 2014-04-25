@@ -20,13 +20,6 @@ class InputManager:
         for i in range(joystick_count):
             joystick = pygame.joystick.Joystick(i)
             joystick.init()
-
-    def init_joysticks(self):
-        pygame.joystick.init()
-        joystick_count = pygame.joystick.get_count()
-        for i in range(joystick_count):
-            joystick = pygame.joystick.Joystick(i)
-            joystick.init()
             
     def process_events(self):
         self._input_map = game.get_game().resource_manager.get('inputmap', 'default')

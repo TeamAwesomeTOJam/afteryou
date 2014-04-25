@@ -49,7 +49,6 @@ class Game(object):
         self.resource_manager.register_loader('sound', LoadSound)
 
         self.input_manager = InputManager()
-        self.input_manager.init_joysticks()
         
         self.renderer = Render()
         
