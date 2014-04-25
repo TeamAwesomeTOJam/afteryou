@@ -11,6 +11,8 @@ from component import (AnimationComponent,
                        DrawComponent, 
                        DrawHitBoxComponent)
 
+from graphicscomponents import DrawCircleComponent
+
 from render import Render
 from input import InputManager
 
@@ -39,6 +41,7 @@ class Game(object):
         self.component_manager.register_component('DrawComponent', DrawComponent())
         self.component_manager.register_component('InputMovementComponent', InputMovementComponent())
         self.component_manager.register_component('DrawHitBoxComponent', DrawHitBoxComponent()) 
+        self.component_manager.register_component('DrawCircleComponent', DrawCircleComponent())
         
         self.entity_manager = EntityManager()
             
