@@ -1,0 +1,5 @@
+{
+    "KEY 27": ["GAME", "QUIT"],
+    "KEY 292" : ["GAME", "FULLSCREEN"],
+    "KEY 293" : ["GAME", "RELOAD"]
+ }
