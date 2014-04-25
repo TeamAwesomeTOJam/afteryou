@@ -51,7 +51,7 @@ class Game(object):
         self.input_manager = InputManager()
         self.input_manager.init_joysticks()
         
-        self.renderer = Render(self)
+        self.renderer = Render()
         
     def run(self, mode):
         #pygame.display.toggle_fullscreen()
