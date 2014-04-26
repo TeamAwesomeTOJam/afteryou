@@ -149,14 +149,7 @@ class PlayerCollisionComponent(object):
     
     def handle_collision(self, entity, other):
         if 'player' in other.tags and entity.chasing:
-            entity.score += 1
-            entity.chasing = False
-            other.chasing = True
-            entity.x = entity.static.x
-            entity.y = entity.static.y
-            other.x = other.static.x
-            other.y = other.static.y
-            game.get_game().background_view.draw()
+            end_round()
                     
         
 def verify_attrs(entity, attrs):
@@ -196,3 +189,27 @@ def get_box_in_front(entity, width, height):
 
 def get_midpoint(entity):
     return Vec2d(entity.x + (entity.width/2), entity.y + (entity.height/2))
+
+def end_round():
+    player1 = game.get_game().entity_manager.get_by_name('player1')
+    player2 = game.get_game().entity_manager.get_by_name('player2')
+    timer = game.get_game().entity_manager.get_by_name('timer')
+            
+    if (player1.chasing and timer.time_remaining < 0) or (player2.chasing and timer.time_remaining >= 0):
+        winner = player2
+    else:
+        winner = player1
+        
+    winner.score += 1
+
+    player1.chasing = False if player1.chasing else True
+    player2.chasing = False if player2.chasing else True   
+    player1.x = player1.static.x
+    player1.y = player1.static.y
+    player2.x = player2.static.x
+    player2.y = player2.static.y
+    timer.time_remaining = timer.time_limit
+    game.get_game().background_view.draw()
+    
+
+    
