@@ -17,6 +17,7 @@
         "DrawCircleComponent",
         "PlayerCollisionComponent",
         "SmokeScreenComponent",
-        "SpawnDecoyComponent"
+        "SpawnDecoyComponent",
+        "MinefieldComponent"
     ]
 }

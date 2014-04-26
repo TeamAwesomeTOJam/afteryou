@@ -20,6 +20,7 @@
     "KEY 107" : ["player2", "DOWN"],
     "KEY 106" : ["player2", "LEFT"],
     "KEY 108" : ["player2", "RIGHT"],
+    "KEY 117" : ["player2", "PLACE_MINEFIELD"],
     
     "1 AXIS -1" : ["player2", "UP"],
     "1 AXIS +1" : ["player2", "DOWN"],

@@ -14,7 +14,12 @@ from component import (AnimationComponent,
 
 from graphicscomponents import DrawCircleComponent
 
-from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent, SpawnDecoyComponent
+from gamecomponents import (SmokeScreenComponent,
+                            DecoyMovementComponent,
+                            SelfDestructComponent,
+                            SpawnDecoyComponent,
+                            MinefieldComponent)
+
 from uicomponents import DrawScoreComponent
 
 from entity import Entity
@@ -54,6 +59,7 @@ class Game(object):
         self.component_manager.register_component('SelfDestructComponent', SelfDestructComponent())
         self.component_manager.register_component('SpawnDecoyComponent', SpawnDecoyComponent())
         self.component_manager.register_component('DrawScoreComponent', DrawScoreComponent())
+        self.component_manager.register_component('MinefieldComponent', MinefieldComponent())
         
         self.entity_manager = EntityManager()
             

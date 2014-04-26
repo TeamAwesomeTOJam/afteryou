@@ -3,11 +3,12 @@ import pygame
 from component import verify_attrs
 from vec2d import Vec2d
 from entity import Entity
+from component import get_midpoint
 
 class SmokeScreenComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['color', 'x', 'y', ('smoke_screen_cooldown', 0)])
+        verify_attrs(entity, ['color', 'x', 'y', 'width', 'height', ('smoke_screen_cooldown', 0)])
         entity.register_handler('input', self.handle_input)
         entity.register_handler('update', self.handle_update)
  
@@ -17,7 +18,8 @@ class SmokeScreenComponent(object):
     
     def handle_input(self, entity, event):
         if event.action == 'SMOKE_SCREEN' and event.value and entity.smoke_screen_cooldown <= 0:
-            pygame.draw.circle(game.get_game().screen, entity.color, (int(entity.x), int(entity.y)), 200)
+            p = get_midpoint(entity)
+            pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), 200)
             entity.smoke_screen_cooldown = 10
     
     def handle_update(self, entity, dt):
@@ -27,9 +29,13 @@ class SmokeScreenComponent(object):
 class SpawnDecoyComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['x','y','dx','dy',('decoy_cooldown',0), 'color'])
+        verify_attrs(entity, ['x', 'y', 'dx', 'dy',('decoy_cooldown',0), 'color'])
         entity.register_handler('update', self.handle_update)
         entity.register_handler('input', self.handle_input)
+    
+    def remove(self, entity):
+        entity.unregister_handler('input', self.handle_input)
+        entity.unregister_handler('update', self.handle_update)
     
     def handle_update(self, entity, dt):
         if entity.decoy_cooldown >= 0:
@@ -75,4 +81,33 @@ class  SelfDestructComponent(object):
         entity.liveness -= dt
         if entity.liveness <= 0:
             game.get_game().entity_manager.remove_entity(entity)
+            
+class MinefieldComponent(object):
+    
+    def add(self, entity):
+        verify_attrs(entity, ['x', 'y', 'width', 'height', ('minefield_cooldown',0), 'color'])
+        entity.register_handler('update', self.handle_update)
+        entity.register_handler('input', self.handle_input)
+    
+    def remove(self, entity):
+        entity.unregister_handler('input', self.handle_input)
+        entity.unregister_handler('update', self.handle_update)
+    
+    def handle_update(self, entity, dt):
+        if entity.minefield_cooldown >= 0:
+            entity.minefield_cooldown -= dt
+    
+    def handle_input(self, entity, event):
+        if event.action == 'PLACE_MINEFIELD' and event.value and entity.minefield_cooldown <= 0:
+            m = get_midpoint(entity)
+            for r in range(30,250,50):
+                for a in range(0,360,20):
+                    v = Vec2d(0,1)
+                    v.length = r
+                    v.angle = a
+                    p = m + v
+                    pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), 5)
+            entity.minefield_cooldown = 10
+    
+    
              
