@@ -61,7 +61,7 @@ class AnimationComponent(object):
 class MovementComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['x', 'y', ('last_good_x', entity.x), ('last_good_y', entity.y)])
+        verify_attrs(entity, ['x', 'y', 'width', 'height', ('last_good_x', entity.x), ('last_good_y', entity.y)])
         entity.register_handler('update', self.handle_update)
     
     def remove(self, entity):
@@ -75,8 +75,8 @@ class MovementComponent(object):
             entity.y += entity.dy * dt
             bound = lambda a,b,x : min(b,max(a,x))
             res = game.get_game().screen_size
-            entity.x = bound(0,res[0],entity.x)
-            entity.y = bound(0,res[1],entity.y)
+            entity.x = bound(0, res[0] - entity.width, entity.x)
+            entity.y = bound(0, res[1] - entity.height, entity.y)
             game.get_game().entity_manager.update_position(entity)
             
         collisions = game.get_game().entity_manager.get_in_area('collision', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
