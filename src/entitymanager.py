@@ -11,6 +11,7 @@ class EntityManager(object):
         self._entities_by_name = {}
         self._entities_by_tag = {}
         self._spatial_maps = {}
+        self.remove_list = []
     
     def add_entity(self, entity):
         self.entities.add(entity)
@@ -31,16 +32,21 @@ class EntityManager(object):
                     self._spatial_maps[tag] = spatialmap.SpatialMap(GRID_SIZE)
                     self._spatial_maps[tag].add(entity)
     
-    def remove_entity(self, entity):       
-        if hasattr(entity, 'tags'):
-            for tag in entity.tags:
-                self._entities_by_tag[tag].remove(entity)
-                self._spatial_maps[tag].remove(entity)
+    def remove_entity(self, entity):     
+        self.remove_list.append(entity)
         
-        if hasattr(entity, 'name'):
-            del self._entities_by_name[entity.name]
+    def cleanup(self):
+        for entity in self.remove_list:  
+            if hasattr(entity, 'tags'):
+                for tag in entity.tags:
+                    self._entities_by_tag[tag].remove(entity)
+                    self._spatial_maps[tag].remove(entity)
             
-        self.entities.remove(entity)
+            if hasattr(entity, 'name'):
+                del self._entities_by_name[entity.name]
+                
+            self.entities.remove(entity)
+        self.remove_list = []
     
     def update_position(self, entity):
         for tag in entity.tags:

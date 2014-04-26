@@ -4,6 +4,7 @@
     "color" : [0,0,0],
     "height" : 40,
     "width" : 40,
+    "liveness" : 10,
     
     "tags" : [
         "draw",
@@ -13,6 +14,7 @@
     "components" : [
         "MovementComponent",
         "DrawCircleComponent",
-        "DecoyMovementComponent"
+        "DecoyMovementComponent",
+        "SelfDestructComponent"
     ]
 }

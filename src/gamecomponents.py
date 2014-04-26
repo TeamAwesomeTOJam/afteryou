@@ -39,5 +39,18 @@ class DecoyMovementComponent(object):
         d = v +  (2 * a)
         entity.dx = d[0]
         entity.dy = d[1]
+
+class  SelfDestructComponent(object):
+    
+    def add(self, entity):
+        verify_attrs(entity, ['liveness'])
+        entity.register_handler('update', self.handle_update)
+    
+    def remove(self, entity):
+        entity.unregister_handler('update', self.handle_update)
         
+    def handle_update(self, entity, dt):
+        entity.liveness -= dt
+        if entity.liveness <= 0:
+            game.get_game().entity_manager.remove_entity(entity)
              

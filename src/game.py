@@ -14,7 +14,7 @@ from component import (AnimationComponent,
 
 from graphicscomponents import DrawCircleComponent
 
-from gamecomponents import SmokeScreenComponent, DecoyMovementComponent
+from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent
 
 from entity import Entity
 
@@ -50,6 +50,7 @@ class Game(object):
         self.component_manager.register_component('SmokeScreenComponent', SmokeScreenComponent())
         self.component_manager.register_component('PlayerCollisionComponent', PlayerCollisionComponent())
         self.component_manager.register_component('DecoyMovementComponent', DecoyMovementComponent())
+        self.component_manager.register_component('SelfDestructComponent', SelfDestructComponent())
         
         self.entity_manager = EntityManager()
             
@@ -92,6 +93,8 @@ class Game(object):
             
             self.mode.update(dt)
             self.mode.draw()
+            
+            self.entity_manager.cleanup()
             
             pygame.display.flip()
             pygame.display.set_caption('fps: %.0d' % self.clock.get_fps())
