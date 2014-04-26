@@ -30,7 +30,8 @@ class InputManager:
                 processed_events.append(InputEvent('GAME', 'QUIT', 1))
             
             elif e.type == pygame.VIDEORESIZE:
-                game.get_game().renderer.resize(e.dict['size'])
+                if game.USE_RENDERER:
+                    game.get_game().renderer.resize(e.dict['size'])
 
 
             elif e.type == pygame.JOYAXISMOTION:
