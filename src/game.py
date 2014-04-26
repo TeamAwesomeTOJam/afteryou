@@ -13,9 +13,8 @@ from component import (AnimationComponent,
                        PlayerCollisionComponent)
 
 from graphicscomponents import DrawCircleComponent
-
 from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent, SpawnDecoyComponent
-from uicomponents import DrawScoreComponent
+from uicomponents import DrawScoreComponent, DrawTimerComponent, UpdateTimerComponent
 
 from entity import Entity
 
@@ -54,6 +53,8 @@ class Game(object):
         self.component_manager.register_component('SelfDestructComponent', SelfDestructComponent())
         self.component_manager.register_component('SpawnDecoyComponent', SpawnDecoyComponent())
         self.component_manager.register_component('DrawScoreComponent', DrawScoreComponent())
+        self.component_manager.register_component('DrawTimerComponent', DrawTimerComponent())
+        self.component_manager.register_component('UpdateTimerComponent', UpdateTimerComponent())
         
         self.entity_manager = EntityManager()
             
@@ -75,6 +76,7 @@ class Game(object):
         self.entity_manager.add_entity(p2)
         self.entity_manager.add_entity(Entity("scoreui-player1"))
         self.entity_manager.add_entity(Entity("scoreui-player2"))
+        self.entity_manager.add_entity(Entity("timerui"))
         
         self.background_view.draw()
 

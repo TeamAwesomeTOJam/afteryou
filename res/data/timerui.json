@@ -1,0 +1,11 @@
+{
+    "name" : "timer",   
+    "x" : 640,
+    "y" : 10,
+    "width" : 200,
+    "height" : 20,
+    "time_limit" : 30,
+    
+    "components" : ["DrawTimerComponent", "UpdateTimerComponent"],
+    "tags" : ["ui", "update"]
+}
