@@ -15,6 +15,7 @@
     "0 AXIS -0"  : ["player1", "LEFT"],
     "0 AXIS +0" : ["player1", "RIGHT"],
     "0 BUTTON 0" : ["player1", "SMOKE_SCREEN"],
+    "0 BUTTON 1" : ["player1", "CREATE_DECOY"],
    
     "KEY 105" : ["player2", "UP"],
     "KEY 107" : ["player2", "DOWN"],
@@ -26,5 +27,6 @@
     "1 AXIS +1" : ["player2", "DOWN"],
     "1 AXIS -0" : ["player2", "LEFT"],
     "1 AXIS +0" : ["player2", "RIGHT"],
-    "1 BUTTON 0" : ["player2", "SMOKE_SCREEN"]
+    "1 BUTTON 0" : ["player2", "SMOKE_SCREEN"],
+    "1 BUTTON 1" : ["player2", "CREATE_DECOY"]
  }
