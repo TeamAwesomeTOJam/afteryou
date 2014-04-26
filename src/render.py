@@ -1,10 +1,58 @@
 import pygame
 import game
+import numpy
+from OpenGL.GL import *
+from OpenGL.arrays import vbo
+#from OpenGLContext.arrays import *
 
 
-class Render:
+def createAndCompileShader(source,type):
+    shader=glCreateShader(type)
+    glShaderSource(shader,source)
+    glCompileShader(shader)
+
+    # get "compile status" - glCompileShader will not fail with 
+    # an exception in case of syntax errors
+    result=glGetShaderiv(shader,GL_COMPILE_STATUS)
+
+    if (result!=1): # shader didn't compile
+        raise Exception("Couldn't compile shader\nShader compilation Log:\n"+glGetShaderInfoLog(shader))
+    return shader
+
+class Render(object):
+    def __init__(self):
+        pass
+        #vert_shader = createAndCompileShader('''
+
+        #        #version 120
+        #        void main() {
+        #        gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+        #        }
+        #        ''',GL_VERTEX_SHADER)
+        #frag_shader = createAndCompileShader('''
+        #        #version 120
+        #        void main() {
+        #            gl_FragColor = vec4(0,1,0,1);
+        #        }
+        #        ''',GL_FRAGMENT_SHADER)
+        #self.vert_shader =glCreateProgram()
+        #glAttachShader(self.vert_shader,vert_shader)
+        #glAttachShader(self.vert_shader,frag_shader)
+        #glLinkProgram(self.vert_shader)
+
+        #self.vbo = vbo.VBO(
+        #        numpy.array([
+        #            [ 0, 1, 0],
+        #            [-1,-1, 0],
+        #            [ 1, 0, 0],
+        #            [ 1, 1, 0],
+        #            [ 0, 1, 0],
+        #            ]),'f')
+        #        '''
 
     def render(self):
+        #shaders.glUseProgram(self.vert_shader)
+
         for view in self.views:
             view.draw()
             

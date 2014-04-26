@@ -34,6 +34,7 @@ class Game(object):
         pygame.init()
         
         self.clock = pygame.time.Clock()
+        self.screen = pygame.display.set_mode(self.screen_size, pygame.OPENGL | pygame.DOUBLEBUF)
         self.screen = pygame.display.set_mode(self.screen_size)
         
         self.component_manager = componentmanager.ComponentManager()
