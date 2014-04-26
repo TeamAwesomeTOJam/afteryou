@@ -13,14 +13,10 @@ from component import (AnimationComponent,
                        PlayerCollisionComponent)
 
 from graphicscomponents import DrawCircleComponent
-<<<<<<< HEAD
 
 from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent, SpawnDecoyComponent
-
-=======
-from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent
 from uicomponents import DrawScoreComponent
->>>>>>> branch 'master' of https://github.com/jdoda/afteryou.git
+
 from entity import Entity
 
 from render import View, BackgroundLayer, SimpleLayer
