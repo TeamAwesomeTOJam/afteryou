@@ -12,12 +12,14 @@
         "draw",
         "update",
         "input",
-        "collision"
+        "collision",
+        "player"
     ],
             
     "components" : [
         "MovementComponent",
         "InputMovementComponent",
-        "DrawCircleComponent"
+        "DrawCircleComponent",
+        "PlayerCollisionComponent"
     ]
 }

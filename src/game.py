@@ -9,7 +9,8 @@ from component import (AnimationComponent,
                        ExampleComponent, 
                        InputMovementComponent, 
                        DrawComponent, 
-                       DrawHitBoxComponent)
+                       DrawHitBoxComponent,
+                       PlayerCollisionComponent)
 
 from graphicscomponents import DrawCircleComponent
 
@@ -47,6 +48,7 @@ class Game(object):
         self.component_manager.register_component('DrawHitBoxComponent', DrawHitBoxComponent()) 
         self.component_manager.register_component('DrawCircleComponent', DrawCircleComponent())
         self.component_manager.register_component('SmokeScreenComponent', SmokeScreenComponent())
+        self.component_manager.register_component('PlayerCollisionComponent', PlayerCollisionComponent())
         
         self.entity_manager = EntityManager()
             
