@@ -19,6 +19,7 @@
         "SmokeScreenComponent",
         "SpawnDecoyComponent",
         "MinefieldComponent",
-        "SpeedBoostComponent"
+        "SpeedBoostComponent",
+        "ButtonInterpreterComponent"
     ]
 }

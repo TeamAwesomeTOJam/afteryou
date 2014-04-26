@@ -19,7 +19,8 @@ from gamecomponents import (SmokeScreenComponent,
                             SelfDestructComponent,
                             SpawnDecoyComponent,
                             MinefieldComponent,
-                            SpeedBoostComponent)
+                            SpeedBoostComponent,
+                            ButtonInterpreterComponent)
 
 from uicomponents import DrawScoreComponent, DrawTimerComponent, UpdateTimerComponent
 
@@ -64,6 +65,7 @@ class Game(object):
         self.component_manager.register_component('DrawTimerComponent', DrawTimerComponent())
         self.component_manager.register_component('UpdateTimerComponent', UpdateTimerComponent())
         self.component_manager.register_component('SpeedBoostComponent', SpeedBoostComponent())
+        self.component_manager.register_component('ButtonInterpreterComponent', ButtonInterpreterComponent())
         
         self.entity_manager = EntityManager()
             

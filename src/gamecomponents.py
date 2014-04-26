@@ -9,15 +9,15 @@ class SmokeScreenComponent(object):
     
     def add(self, entity):
         verify_attrs(entity, ['color', 'x', 'y', 'width', 'height', ('smoke_screen_cooldown', 0)])
-        entity.register_handler('input', self.handle_input)
+        entity.register_handler('action', self.handle_action)
         entity.register_handler('update', self.handle_update)
  
     def remove(self, entity):
-        entity.unregister_handler('input', self.handle_input)
+        entity.unregister_handler('action', self.handle_action)
         entity.unregister_handler('update', self.handle_update)
     
-    def handle_input(self, entity, event):
-        if event.action == 'SMOKE_SCREEN' and event.value and entity.smoke_screen_cooldown <= 0 and not entity.chasing:
+    def handle_action(self, entity, action):
+        if action == 'SMOKE_SCREEN' and entity.smoke_screen_cooldown <= 0:
             p = get_midpoint(entity)
             pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), 200)
             entity.smoke_screen_cooldown = 10
@@ -31,18 +31,18 @@ class SpawnDecoyComponent(object):
     def add(self, entity):
         verify_attrs(entity, ['x', 'y', 'dx', 'dy',('decoy_cooldown',0), 'color'])
         entity.register_handler('update', self.handle_update)
-        entity.register_handler('input', self.handle_input)
+        entity.register_handler('action', self.handle_action)
     
     def remove(self, entity):
-        entity.unregister_handler('input', self.handle_input)
+        entity.unregister_handler('action', self.handle_action)
         entity.unregister_handler('update', self.handle_update)
     
     def handle_update(self, entity, dt):
         if entity.decoy_cooldown >= 0:
             entity.decoy_cooldown -= dt
     
-    def handle_input(self, entity, event):
-        if event.action == 'CREATE_DECOY' and event.value and entity.decoy_cooldown <= 0 and not entity.chasing:
+    def handle_action(self, entity, action):
+        if action == 'CREATE_DECOY' and entity.decoy_cooldown <= 0:
             if entity.dx or entity.dy:
                 d = (entity.dx,entity.dy)
             else:
@@ -87,18 +87,18 @@ class MinefieldComponent(object):
     def add(self, entity):
         verify_attrs(entity, ['x', 'y', 'width', 'height', ('minefield_cooldown',0), 'color'])
         entity.register_handler('update', self.handle_update)
-        entity.register_handler('input', self.handle_input)
+        entity.register_handler('action', self.handle_action)
     
     def remove(self, entity):
-        entity.unregister_handler('input', self.handle_input)
+        entity.unregister_handler('action', self.handle_action)
         entity.unregister_handler('update', self.handle_update)
     
     def handle_update(self, entity, dt):
         if entity.minefield_cooldown >= 0:
             entity.minefield_cooldown -= dt
     
-    def handle_input(self, entity, event):
-        if event.action == 'PLACE_MINEFIELD' and event.value and entity.minefield_cooldown <= 0 and entity.chasing:
+    def handle_action(self, entity, action):
+        if action == 'PLACE_MINEFIELD' and entity.minefield_cooldown <= 0:
             m = get_midpoint(entity)
             for r in range(30,250,50):
                 for a in range(0,360,20):
@@ -114,10 +114,10 @@ class SpeedBoostComponent(object):
     def add(self, entity):
         verify_attrs(entity, ['speed', ('speed_boost_activation_cooldown',0), ('base_speed', entity.speed), ('speed_boost_time', 0)])
         entity.register_handler('update', self.handle_update)
-        entity.register_handler('input', self.handle_input)
+        entity.register_handler('action', self.handle_action)
     
     def remove(self, entity):
-        entity.unregister_handler('input', self.handle_input)
+        entity.unregister_handler('action', self.handle_action)
         entity.unregister_handler('update', self.handle_update)
     
     def handle_update(self, entity, dt):
@@ -128,10 +128,31 @@ class SpeedBoostComponent(object):
             if entity.speed_boost_time <= 0:
                 entity.speed = entity.base_speed
     
-    def handle_input(self, entity, event):
-        if event.action == 'SPEED_BOOST' and event.value and entity.speed_boost_activation_cooldown <= 0 and entity.chasing:
+    def handle_action(self, entity, action):
+        if action == 'SPEED_BOOST' and entity.speed_boost_activation_cooldown <= 0:
             entity.speed = entity.speed * 1.5
             entity.speed_boost_time = 3
-            entity.minefield_cooldown = 10
+            entity.speed_boost_activation_cooldown = 10
             
-             
+class ButtonInterpreterComponent(object):
+    
+    def add(self, entity):
+        verify_attrs(entity,['chasing'])
+        entity.register_handler('input', self.handle_input)
+    
+    def remove(self, entity):
+        entity.unregister_handler('input', self.handle_input)
+        
+    def handle_input(self, entity, event):
+        if event.action == 'BUTTON1' and event.value:
+            if entity.chasing:
+                entity.handle('action', 'SPEED_BOOST')
+            else:
+                entity.handle('action', 'SMOKE_SCREEN')
+        elif event.action == 'BUTTON2' and event.value:
+            if entity.chasing:
+                entity.handle('action', 'PLACE_MINEFIELD')
+            else:
+                entity.handle('action', 'CREATE_DECOY')
+                
+     
