@@ -153,7 +153,8 @@ class PlayerCollisionComponent(object):
             entity.y = entity.static.y
             other.x = other.static.x
             other.y = other.static.y
-        
+            game.get_game().view.draw()
+                    
         
 def verify_attrs(entity, attrs):
     missing_attrs = []
