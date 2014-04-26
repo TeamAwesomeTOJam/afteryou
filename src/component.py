@@ -93,9 +93,6 @@ class InputMovementComponent(object):
         entity.unregister_handler('input', self.handle_input)
     
     def handle_input(self, entity, event):
-        if event.target != entity.name or event.action not in ['RIGHT', 'UP', 'LEFT', 'DOWN']:
-            return
-        
         if event.action == 'RIGHT':
             entity.dx = event.value * entity.speed
         elif event.action == 'UP':

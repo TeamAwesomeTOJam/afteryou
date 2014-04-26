@@ -56,4 +56,7 @@ class EntityManager(object):
             return set()
     
     def get_in_area(self, tag, rect, precise=True):
-        return self._spatial_maps[tag].get(rect, precise)
+        try:
+            return self._spatial_maps[tag].get(rect, precise)
+        except KeyError:
+            return set()

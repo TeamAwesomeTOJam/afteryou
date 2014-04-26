@@ -6,6 +6,8 @@
     "color" : [255,0,0],
     "radius" : 20,
     "name" : "player1",
+    "height" : 10,
+    "width" : 10,
     
     "tags" : [
         "draw",

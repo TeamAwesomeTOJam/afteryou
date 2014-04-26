@@ -13,5 +13,5 @@ class DrawCircleComponent(object):
         entity.unregister_handler('draw', self.handle_draw)
         
     def handle_draw(self, entity, surface, transform):
-        center = transform(entity.x, entity.y)
-        pygame.draw.circle(surface, entity.color, center, entity.radius)
+        screen_x, screen_y = transform(entity.x, entity.y)
+        pygame.draw.circle(surface, entity.color, (int(screen_x), int(screen_y)), entity.radius)
