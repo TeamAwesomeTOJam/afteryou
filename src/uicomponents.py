@@ -1,6 +1,7 @@
 import pygame
 import game
-from component import verify_attrs, end_round
+from component import verify_attrs
+import mode
 
 
 class DrawScoreComponent(object):
@@ -61,5 +62,5 @@ class UpdateTimerComponent(object):
     def handle_update(self, entity, dt):
         entity.time_remaining -= dt
         if entity.time_remaining < 0:
-            end_round()
+            game.get_game().change_mode(mode.BetweenRoundMode())
         

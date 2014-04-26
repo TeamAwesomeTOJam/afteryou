@@ -3,6 +3,12 @@ import game
 
 class AttractMode(object):
     
+    def enter(self):
+        pass
+    
+    def leave(self):
+        pass
+    
     def handle_event(self, event):
         if event.action not in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
             game.get_game().mode = PlayMode()
@@ -16,6 +22,33 @@ class AttractMode(object):
 
 class PlayMode(object):
     
+    def enter(self):
+        pass
+    
+    def leave(self):
+        player1 = game.get_game().entity_manager.get_by_name('player1')
+        player2 = game.get_game().entity_manager.get_by_name('player2')
+        timer = game.get_game().entity_manager.get_by_name('timer')
+                
+        if (player1.chasing and timer.time_remaining < 0) or (player2.chasing and timer.time_remaining >= 0):
+            winner = player2
+        else:
+            winner = player1
+            
+        winner.score += 1
+    
+        for player in [player1, player2]:
+            player.chasing = False if player.chasing else True   
+            player.x = player.static.x
+            player.y = player.static.y
+            player.dx = 0
+            player.dy = 0
+            
+        for decoy in game.get_game().entity_manager.get_by_tag('decoy'):
+            game.get_game().entity_manager.remove_entity(decoy)
+            
+        timer.time_remaining = timer.time_limit
+
     def handle_event(self, event):
         entity = game.get_game().entity_manager.get_by_name(event.target)
         entity.handle('input', event)
@@ -32,6 +65,12 @@ class BetweenRoundMode(object):
     
     def __init__(self):
         self.ttl = 3
+    
+    def enter(self):
+        game.get_game().background_view.draw()
+        
+    def leave(self):
+        pass
     
     def handle_event(self, event):
         pass

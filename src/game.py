@@ -92,7 +92,7 @@ class Game(object):
         
         self.background_view.draw()
 
-        self.mode = mode
+        self.change_mode(mode)
         self.running = True
 
         while self.running:
@@ -118,6 +118,11 @@ class Game(object):
             pygame.display.flip()
             pygame.display.set_caption('fps: %.0d' % self.clock.get_fps())
             
+    def change_mode(self, new_mode):
+        if self.mode:
+            self.mode.leave()
+        self.mode = new_mode
+        self.mode.enter()
 
 def get_game():
     return _game

@@ -150,7 +150,7 @@ class PlayerCollisionComponent(object):
     
     def handle_collision(self, entity, other):
         if 'player' in other.tags and entity.chasing:
-            end_round()
+            game.get_game().change_mode(mode.BetweenRoundMode())
                     
         
 def verify_attrs(entity, attrs):
@@ -190,33 +190,3 @@ def get_box_in_front(entity, width, height):
 
 def get_midpoint(entity):
     return Vec2d(entity.x + (entity.width/2), entity.y + (entity.height/2))
-
-def end_round():
-    player1 = game.get_game().entity_manager.get_by_name('player1')
-    player2 = game.get_game().entity_manager.get_by_name('player2')
-    timer = game.get_game().entity_manager.get_by_name('timer')
-            
-    if (player1.chasing and timer.time_remaining < 0) or (player2.chasing and timer.time_remaining >= 0):
-        winner = player2
-    else:
-        winner = player1
-        
-    winner.score += 1
-
-    for player in [player1, player2]:
-        player.chasing = False if player.chasing else True   
-        player.x = player.static.x
-        player.y = player.static.y
-        player.dx = 0
-        player.dy = 0
-        
-    for decoy in game.get_game().entity_manager.get_by_tag('decoy'):
-        game.get_game().entity_manager.remove_entity(decoy)
-        
-    timer.time_remaining = timer.time_limit
-    game.get_game().background_view.draw()
-    
-    game.get_game().mode = mode.BetweenRoundMode()
-    
-
-    
