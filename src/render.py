@@ -74,6 +74,16 @@ class BackgroundLayer(object):
             p = (p + 1) % 2
             
 
+class SolidBackgroundLayer(object):
+    
+    def __init__(self, color):
+        self.color = color
+    
+    def draw(self, view):
+        r = pygame.Rect(view.area)
+        pygame.draw.rect(view.surface, self.color, r)
+            
+
 class SimpleLayer(object):
     
     def __init__(self, tag):
