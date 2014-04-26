@@ -75,10 +75,10 @@ class MovementComponent(object):
             entity.y += entity.dy * dt
             game.get_game().entity_manager.update_position(entity)
             
-            collisions = game.get_game().entity_manager.get_in_area('collide', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
-            for collided_entity in collisions:
-                collided_entity.handle('collision', entity)
-                entity.handle('collision', collided_entity)
+#             collisions = game.get_game().entity_manager.get_in_area('collide', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
+#             for collided_entity in collisions:
+#                 collided_entity.handle('collision', entity)
+#                 entity.handle('collision', collided_entity)
 
 
 class InputMovementComponent(object):
