@@ -1,8 +1,10 @@
 {
     "name" : "player1",
     "x" : 50, "y" : 360,
-    "color" : [255,0,0],
+    "color" : [255,100,100],
     
-    "includes" : ["player"]
+    "includes" : ["player"],
+    
+    "components+" : ["SmokeScreenComponent"]
     
 }

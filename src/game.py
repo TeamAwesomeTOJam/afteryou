@@ -13,6 +13,8 @@ from component import (AnimationComponent,
 
 from graphicscomponents import DrawCircleComponent
 
+from gamecomponents import SmokeScreenComponent
+
 from entity import Entity
 
 from render import Render
@@ -44,6 +46,7 @@ class Game(object):
         self.component_manager.register_component('InputMovementComponent', InputMovementComponent())
         self.component_manager.register_component('DrawHitBoxComponent', DrawHitBoxComponent()) 
         self.component_manager.register_component('DrawCircleComponent', DrawCircleComponent())
+        self.component_manager.register_component('SmokeScreenComponent', SmokeScreenComponent())
         
         self.entity_manager = EntityManager()
             

@@ -1,7 +1,7 @@
 {
     "name" : "player2",
     "x" : 1170, "y" : 360,
-    "color" : [0,255,0],
+    "color" : [100,100,255],
     
     "includes" : ["player"]
     
