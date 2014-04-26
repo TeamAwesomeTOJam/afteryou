@@ -129,15 +129,16 @@ class Render(object):
 
 class View(object):
     
-    def __init__(self, surface, area, layers, entity_name):
+    def __init__(self, surface, area, layers=None, entity_name=None):
         self.surface = surface
         self.area = area
-        self.layers = layers
+        self.layers = layers if layers != None else []
         self.entity_name = entity_name
     
     @property
     def entity(self):
-        return game.get_game().entity_manager.get_by_name(self.entity_name)
+        if self.entity_name:
+            return game.get_game().entity_manager.get_by_name(self.entity_name)
     
     def add_layer(self, layer):
         self.layers.append(layer)
@@ -186,3 +187,23 @@ class DepthSortedLayer(object):
         for entity in entities_to_draw:
             entity.handle('draw', view.surface, transform)
 
+
+class BackgroundLayer(object):
+    
+    def draw(self, view):
+        r = pygame.Rect(view.area)
+        p = 1
+        for x in range(0, view.area.width, 100):
+            r.left = x
+            pygame.draw.rect(view.surface, game.get_game().entity_manager.get_by_name('player' + str(1+p)).color, r)
+            p = (p + 1) % 2
+            
+
+class SimpleLayer(object):
+    
+    def __init__(self, tag):
+        self.tag = tag
+        
+    def draw(self, view):        
+        for entity in game.get_game().entity_manager.get_by_tag(self.tag):
+            entity.handle('draw', view.surface, lambda x, y : (x, y))

@@ -14,9 +14,12 @@ from component import (AnimationComponent,
 
 from graphicscomponents import DrawCircleComponent
 
+from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent, SpawnDecoyComponent
+from uicomponents import DrawScoreComponent
+
 from entity import Entity
 
-from render import Render
+from render import View, BackgroundLayer, SimpleLayer
 from input import InputManager
 
 
@@ -50,7 +53,12 @@ class Game(object):
         self.component_manager.register_component('InputMovementComponent', InputMovementComponent())
         self.component_manager.register_component('DrawHitBoxComponent', DrawHitBoxComponent()) 
         self.component_manager.register_component('DrawCircleComponent', DrawCircleComponent())
+        self.component_manager.register_component('SmokeScreenComponent', SmokeScreenComponent())
         self.component_manager.register_component('PlayerCollisionComponent', PlayerCollisionComponent())
+        self.component_manager.register_component('DecoyMovementComponent', DecoyMovementComponent())
+        self.component_manager.register_component('SelfDestructComponent', SelfDestructComponent())
+        self.component_manager.register_component('SpawnDecoyComponent', SpawnDecoyComponent())
+        self.component_manager.register_component('DrawScoreComponent', DrawScoreComponent())
         
         self.entity_manager = EntityManager()
             
@@ -66,20 +74,20 @@ class Game(object):
             self.renderer = Render()
             self.renderer.resize(self.screen_size)
        
+
+        self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [BackgroundLayer()])
+        self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SimpleLayer('draw'), SimpleLayer('ui')])
         
     def run(self, mode):
-        self.entity_manager.add_entity(Entity("player1"))
-        self.entity_manager.add_entity(Entity("player2"))
+        p1 = Entity("player1")
+        p2 = Entity("player2")
+        self.entity_manager.add_entity(p1)
+        self.entity_manager.add_entity(p2)
+        self.entity_manager.add_entity(Entity("scoreui-player1"))
+        self.entity_manager.add_entity(Entity("scoreui-player2"))
         
-        #starting field
-        r = pygame.Rect(0, 0, 100, self.screen_size[1])
-        p = 1
-        for x in range(0, 1280, 100):
-            r.left = x
-            pygame.draw.rect(self.screen, self.entity_manager.get_by_name('player' + str(1+p)).color, r)
-            p = (p + 1) % 2
-        
-        #pygame.display.toggle_fullscreen()
+        self.background_view.draw()
+
         self.mode = mode
 
         while True:
@@ -101,6 +109,8 @@ class Game(object):
             self.mode.draw()
             if USE_RENDERER:
                 self.renderer.render()
+            
+            self.entity_manager.cleanup()
             
             pygame.display.flip()
             pygame.display.set_caption('fps: %.0d' % self.clock.get_fps())

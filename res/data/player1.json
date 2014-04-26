@@ -1,7 +1,8 @@
 {
     "name" : "player1",
+    "chasing" : true,
     "x" : 50, "y" : 360,
-    "color" : [255,0,0],
+    "color" : [255,100,100],
     
     "includes" : ["player"]
     
