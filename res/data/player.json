@@ -18,6 +18,7 @@
         "PlayerCollisionComponent",
         "SmokeScreenComponent",
         "SpawnDecoyComponent",
-        "MinefieldComponent"
+        "MinefieldComponent",
+        "SpeedBoostComponent"
     ]
 }
