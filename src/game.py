@@ -42,7 +42,8 @@ class Game(object):
         self.mode = None
         self.running = False
         self.screen_size = screen_size
-
+        
+        pygame.mixer.pre_init(frequency=44100)
         pygame.init()
         
         self.clock = pygame.time.Clock()
