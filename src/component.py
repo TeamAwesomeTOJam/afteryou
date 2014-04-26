@@ -137,7 +137,23 @@ class DrawHitBoxComponent(object):
         
     def handle_draw(self, entity, surface):
         pygame.draw.rect(surface, (255, 0, 255), (entity.x, entity.y, entity.width, entity.height))
+
+
+class PlayerCollisionComponent(object):
     
+    def add(self, entity):
+        entity.register_handler('collision', self.handle_collision)
+
+    def remove(self, entity):
+        entity.unregister_handler('collision', self.handle_collision)
+    
+    def handle_collision(self, entity, other):
+        if 'player' in other.tags:
+            entity.x = entity.static.x
+            entity.y = entity.static.y
+            other.x = other.static.x
+            other.y = other.static.y
+        
         
 def verify_attrs(entity, attrs):
     missing_attrs = []
