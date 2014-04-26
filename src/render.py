@@ -19,7 +19,7 @@ def createAndCompileShader(source,type):
         raise Exception("Couldn't compile shader\nShader compilation Log:\n"+glGetShaderInfoLog(shader))
     return shader
 
-class Render(object):
+class Render2(object):
     def __init__(self):
         pass
         #vert_shader = createAndCompileShader('''
@@ -49,7 +49,13 @@ class Render(object):
         #            [ 0, 1, 0],
         #            ]),'f')
         #        '''
+    def render(self):
 
+        for view in self.views:
+            view.draw()
+            
+        pygame.display.flip()
+class Render:
     def render(self):
         #shaders.glUseProgram(self.vert_shader)
 
