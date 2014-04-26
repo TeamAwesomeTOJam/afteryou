@@ -1,5 +1,5 @@
 import pygame
-from component import verify_attrs, get_midpoint
+from component import verify_attrs
 
 
 class DrawCircleComponent(object):
@@ -13,6 +13,6 @@ class DrawCircleComponent(object):
         entity.unregister_handler('draw', self.handle_draw)
         
     def handle_draw(self, entity, surface, transform):
-        screen_x, screen_y = transform(*get_midpoint(entity))
+        screen_x, screen_y = transform(entity.x, entity.y)
         r = pygame.Rect(int(screen_x), int(screen_y), entity.height, entity.width)
         pygame.draw.ellipse(surface, entity.color, r)
