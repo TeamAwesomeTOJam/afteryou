@@ -18,7 +18,7 @@ from gamecomponents import SmokeScreenComponent
 
 from entity import Entity
 
-from render import Render
+from render import View, BackgroundLayer
 from input import InputManager
 
 
@@ -59,23 +59,15 @@ class Game(object):
         self.resource_manager.register_loader('sound', LoadSound)
 
         self.input_manager = InputManager()
-        
-        self.renderer = Render()
-       
+
+        self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [BackgroundLayer()])
         
     def run(self, mode):
         self.entity_manager.add_entity(Entity("player1"))
         self.entity_manager.add_entity(Entity("player2"))
         
-        #starting field
-        r = pygame.Rect(0, 0, 100, self.screen_size[1])
-        p = 1
-        for x in range(0, 1280, 100):
-            r.left = x
-            pygame.draw.rect(self.screen, self.entity_manager.get_by_name('player' + str(1+p)).color, r)
-            p = (p + 1) % 2
-        
-        #pygame.display.toggle_fullscreen()
+        self.view.draw()
+
         self.mode = mode
 
         while True:
