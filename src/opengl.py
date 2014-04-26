@@ -277,23 +277,19 @@ class GLRenderer:
         #    view.draw()
         glColor3f(1,1,1);
 
-        em = game.get_game().entity_manager
-
 
         color_location = glGetUniformLocation(self.player_shader, "color")
             
         for circle in self.circle_queue:
-            player,cx,cy,r = circle
-            p = em.get_by_name(player)
-            col = map(lambda x: x/255.0, p.color)
+            color,cx,cy,r = circle
+            col = map(lambda x: x/255.0, color)
 
             glUniform3f(color_location, col[0],col[1],col[2])
             self.drawCircle(cx,cy,r)
 
         for rectangle in self.rectangle_queue:
-            player,x,y,w,h = rectangle
-            p = em.get_by_name(player)
-            col = map(lambda x: x/255.0, p.color)
+            color,x,y,w,h = rectangle
+            col = map(lambda x: x/255.0, color)
 
             glUniform3f(color_location, col[0],col[1],col[2])
             self.drawRect(x,y,w,h)
@@ -304,6 +300,14 @@ class GLRenderer:
 
 
 
+
+
+    def cleanup(self):
+
+        self.render_to_fbo(self.fbo,\
+                lambda: (glClearColor(0.0, 0.0, 0, 0),
+                glClear(GL_COLOR_BUFFER_BIT))
+                )
 
 
 
@@ -321,4 +325,3 @@ class GLRenderer:
         #glVertex2f(0,1);
         #glEnd();
             
-        pygame.display.flip()

@@ -20,7 +20,7 @@ class SmokeScreenComponent(object):
         if action == 'SMOKE_SCREEN' and entity.smoke_screen_cooldown <= 0:
             p = get_midpoint(entity)
             game.get_game().renderer.circle_queue.append(
-                    (entity.name,int(p[0]), int(p[1]), entity.smoke_screen_rad)
+                    (entity.color,int(p[0]), int(p[1]), entity.smoke_screen_rad)
                     )
 
             #pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), entity.smoke_screen_rad)
@@ -113,9 +113,9 @@ class MinefieldComponent(object):
                     v.angle = a
                     v[1] = v[1] * ratio
                     p = m + v
-                    pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), 5)
+                    #pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), 5)
                     game.get_game().renderer.circle_queue.append(
-                    (entity.name,int(p[0]), int(p[1]), 5)
+                    (entity.color,int(p[0]), int(p[1]), 5)
                     )
             entity.minefield_cooldown = entity.minefield_cooldown_time
     

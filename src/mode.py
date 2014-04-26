@@ -72,7 +72,8 @@ class BetweenRoundMode(object):
     def enter(self):
         self.music = game.get_game().resource_manager.get('sound', 'Drums Intro.ogg')
         self.music.play(loops=-1)
-        game.get_game().background_view.draw()
+        #game.get_game().background_view.draw()
+        game.get_game().renderer.cleanup()
         
     def leave(self):
         self.music.stop()
