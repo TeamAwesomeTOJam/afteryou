@@ -29,6 +29,30 @@ class ResourceManager(object):
         self.cache = {}
         
         
+class EntityDataLoader(object):
+    
+
+    
+    def load(self, path):
+        with open(path) as in_file:
+            definition = json.load(in_file)
+        
+        if 'includes' in definition:
+            flattened = {}
+            for include_path in definition['includes']:
+                include = game.get_game().resource_manager.get(include_path)
+                for field in include._fields:
+                    flattened[field] = getattr(include, field)
+            for key, value in definition.iteritems():
+                if key.endswith('+'):
+                    base_key = key[:-1]
+                    flattened[base_key] = flattened.get(base_key, tuple()) + tuple(value)
+                else:
+                    flattened[key] = value
+            definition = flattened
+        
+        return freezejson.freeze_value(definition)
+    
 def LoadEntityData(prefix, key):
     with open(os.path.join(prefix, 'data', key + '.json')) as in_file:
         definition = json.load(in_file)
