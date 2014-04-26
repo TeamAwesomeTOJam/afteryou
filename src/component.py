@@ -73,12 +73,16 @@ class MovementComponent(object):
             entity.last_good_y = entity.y
             entity.x += entity.dx * dt
             entity.y += entity.dy * dt
+            bound = lambda a,b,x : min(b,max(a,x))
+            res = game.get_game().screen_size
+            entity.x = bound(0,res[0],entity.x)
+            entity.y = bound(0,res[1],entity.y)
             game.get_game().entity_manager.update_position(entity)
             
-            collisions = game.get_game().entity_manager.get_in_area('collide', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
-            for collided_entity in collisions:
-                collided_entity.handle('collision', entity)
-                entity.handle('collision', collided_entity)
+#             collisions = game.get_game().entity_manager.get_in_area('collide', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
+#             for collided_entity in collisions:
+#                 collided_entity.handle('collision', entity)
+#                 entity.handle('collision', collided_entity)
 
 
 class InputMovementComponent(object):

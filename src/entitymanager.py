@@ -59,4 +59,4 @@ class EntityManager(object):
         try:
             return self._spatial_maps[tag].get(rect, precise)
         except KeyError:
-            return set()
+            return set

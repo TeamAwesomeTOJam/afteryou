@@ -1,11 +1,11 @@
 import pygame
-from component import verify_attrs
+from component import verify_attrs, get_midpoint
 
 
 class DrawCircleComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['x', 'y', 'color', 'radius'])
+        verify_attrs(entity, ['x', 'y', 'color', 'height', 'width'])
         
         entity.register_handler('draw', self.handle_draw)
     
@@ -13,5 +13,6 @@ class DrawCircleComponent(object):
         entity.unregister_handler('draw', self.handle_draw)
         
     def handle_draw(self, entity, surface, transform):
-        screen_x, screen_y = transform(entity.x, entity.y)
-        pygame.draw.circle(surface, entity.color, (int(screen_x), int(screen_y)), entity.radius)
+        screen_x, screen_y = transform(*get_midpoint(entity))
+        r = pygame.Rect(int(screen_x), int(screen_y), entity.height, entity.width)
+        pygame.draw.ellipse(surface, entity.color, r)
