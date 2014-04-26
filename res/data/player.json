@@ -11,7 +11,8 @@
     "tags" : [
         "draw",
         "update",
-        "input"
+        "input",
+        "collision"
     ],
             
     "components" : [
