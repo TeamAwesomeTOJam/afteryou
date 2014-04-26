@@ -28,7 +28,13 @@ class InputManager:
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 processed_events.append(InputEvent('GAME', 'QUIT', 1))
-            if e.type == pygame.JOYAXISMOTION:
+            
+            elif e.type == pygame.VIDEORESIZE:
+                if game.USE_RENDERER:
+                    game.get_game().renderer.resize(e.dict['size'])
+
+
+            elif e.type == pygame.JOYAXISMOTION:
                 control_type = 'AXIS'
                 device_id = e.joy
                 value, _ = self._normalize_axis(e.value, 0)

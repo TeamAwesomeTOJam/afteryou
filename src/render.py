@@ -1,5 +1,17 @@
 import pygame
 import game
+import math
+import numpy
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
+from OpenGL.arrays import vbo
+#from OpenGLContext.arrays import *
+
+
+
+class Render(object):
+    pass
 
 
 class View(object):
@@ -68,11 +80,18 @@ class BackgroundLayer(object):
     def draw(self, view):
         r = pygame.Rect(view.area)
         p = 1
-        for x in range(0, view.area.width, 100):
+        for x in xrange(0, view.area.width, 100):
             r.left = x
             pygame.draw.rect(view.surface, game.get_game().entity_manager.get_by_name('player' + str(1+p)).color, r)
+            print "Ger"
             p = (p + 1) % 2
             
+    def render(self,fbo):
+        p = 1
+        for x in xrange(0, view.area.width, 100):
+            pygame.draw.rect(view.surface, game.get_game().entity_manager.get_by_name('player' + str(1+p)).color, r)
+            print "Ger"
+            p = (p + 1) % 2
 
 class SolidBackgroundLayer(object):
     

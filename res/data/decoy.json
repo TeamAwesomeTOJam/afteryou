@@ -9,7 +9,8 @@
     "tags" : [
         "draw",
         "update",
-        "decoy"
+        "decoy",
+        "draw_as_player"
     ],
             
     "components" : [

@@ -189,4 +189,5 @@ def get_box_in_front(entity, width, height):
     return collision_box
 
 def get_midpoint(entity):
+    return Vec2d(entity.x , entity.y )
     return Vec2d(entity.x + (entity.width/2), entity.y + (entity.height/2))

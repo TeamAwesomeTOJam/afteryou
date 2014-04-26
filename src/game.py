@@ -1,6 +1,5 @@
 import sys
 import pygame
-
 import componentmanager
 from entitymanager import EntityManager
 from resourcemanager import ResourceManager, LoadEntityData, LoadImage, LoadInputMapping, LoadSound
@@ -28,9 +27,13 @@ from entity import Entity
 
 from render import View, BackgroundLayer, SimpleLayer, SolidBackgroundLayer
 from input import InputManager
+from opengl import GLRenderer
 
 
 _game = None
+
+USE_RENDERER = False
+USE_RENDERER = True
 
 
 class Game(object):
@@ -47,7 +50,10 @@ class Game(object):
         pygame.init()
         
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode(self.screen_size)
+        if USE_RENDERER:
+            self.screen = pygame.display.set_mode(self.screen_size, pygame.OPENGL | pygame.DOUBLEBUF | pygame.HWSURFACE)
+        else:
+            self.screen = pygame.display.set_mode(self.screen_size)
         
         self.component_manager = componentmanager.ComponentManager()
         self.component_manager.register_component('MovementComponent', MovementComponent())
@@ -78,6 +84,11 @@ class Game(object):
         self.resource_manager.register_loader('sound', LoadSound)
 
         self.input_manager = InputManager()
+        
+        if USE_RENDERER:
+            self.renderer = GLRenderer()
+            self.renderer.resize(self.screen_size)
+       
 
         self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SolidBackgroundLayer((0,0,0))])
         self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SimpleLayer('draw'), SimpleLayer('ui')])
@@ -91,7 +102,10 @@ class Game(object):
         self.entity_manager.add_entity(Entity("scoreui-player2"))
         self.entity_manager.add_entity(Entity("timerui"))
         
-        self.background_view.draw()
+        if USE_RENDERER:
+            self.renderer.render_to_fbo(self.renderer.bg_fbo, self.renderer.drawBackground)
+        else:
+            self.background_view.draw()
 
         self.change_mode(mode)
         self.running = True
@@ -112,7 +126,10 @@ class Game(object):
                     self.mode.handle_event(event)
             
             self.mode.update(dt)
-            self.mode.draw()
+            if USE_RENDERER:
+                self.renderer.render()
+            else:
+                self.mode.draw()
             
             self.entity_manager.cleanup()
             
