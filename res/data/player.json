@@ -5,6 +5,7 @@
     
     "tags" : [
         "draw",
+        "draw_as_player",
         "update",
         "input",
         "collision",

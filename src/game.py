@@ -1,6 +1,5 @@
 import sys
 import pygame
-
 import componentmanager
 from entitymanager import EntityManager
 from resourcemanager import ResourceManager, LoadEntityData, LoadImage, LoadInputMapping, LoadSound
@@ -19,13 +18,15 @@ from uicomponents import DrawScoreComponent
 
 from entity import Entity
 
-from render import View, BackgroundLayer, SimpleLayer
+from render import View, BackgroundLayer, SimpleLayer,Render
 from input import InputManager
+from opengl import GLRenderer
 
 
 _game = None
 
 USE_RENDERER = False
+USE_RENDERER = True
 
 
 class Game(object):
@@ -41,7 +42,7 @@ class Game(object):
         
         self.clock = pygame.time.Clock()
         if USE_RENDERER:
-            self.screen = pygame.display.set_mode(self.screen_size, pygame.OPENGL | pygame.DOUBLEBUF)
+            self.screen = pygame.display.set_mode(self.screen_size, pygame.OPENGL | pygame.DOUBLEBUF | pygame.HWSURFACE)
         else:
             self.screen = pygame.display.set_mode(self.screen_size)
         
@@ -71,7 +72,7 @@ class Game(object):
         self.input_manager = InputManager()
         
         if USE_RENDERER:
-            self.renderer = Render()
+            self.renderer = GLRenderer()
             self.renderer.resize(self.screen_size)
        
 
@@ -86,7 +87,10 @@ class Game(object):
         self.entity_manager.add_entity(Entity("scoreui-player1"))
         self.entity_manager.add_entity(Entity("scoreui-player2"))
         
-        self.background_view.draw()
+        if USE_RENDERER:
+            self.renderer.render_to_fbo(self.renderer.bg_fbo, self.renderer.drawBackground)
+        else:
+            self.background_view.draw()
 
         self.mode = mode
 
@@ -106,9 +110,10 @@ class Game(object):
                     self.mode.handle_event(event)
             
             self.mode.update(dt)
-            self.mode.draw()
             if USE_RENDERER:
                 self.renderer.render()
+            else:
+                self.mode.draw()
             
             self.entity_manager.cleanup()
             
