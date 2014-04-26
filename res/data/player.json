@@ -11,12 +11,15 @@
     "tags" : [
         "draw",
         "update",
-        "input"
+        "input",
+        "collision",
+        "player"
     ],
             
     "components" : [
         "MovementComponent",
         "InputMovementComponent",
-        "DrawCircleComponent"
+        "DrawCircleComponent",
+        "PlayerCollisionComponent"
     ]
 }

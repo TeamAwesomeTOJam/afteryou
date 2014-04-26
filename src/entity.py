@@ -22,7 +22,6 @@ class Entity(object):
         return game.get_game().resource_manager.get('data', self._static_data_name)
         
     def register_handler(self, event, handler):
-        print event, handler
         self._handlers.setdefault(event, []).append(handler)
         
     def unregister_handler(self, event, handler):

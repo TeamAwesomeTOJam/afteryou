@@ -79,10 +79,10 @@ class MovementComponent(object):
             entity.y = bound(0,res[1],entity.y)
             game.get_game().entity_manager.update_position(entity)
             
-#             collisions = game.get_game().entity_manager.get_in_area('collide', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
-#             for collided_entity in collisions:
-#                 collided_entity.handle('collision', entity)
-#                 entity.handle('collision', collided_entity)
+            collisions = game.get_game().entity_manager.get_in_area('collision', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
+            for collided_entity in collisions:
+                collided_entity.handle('collision', entity)
+                entity.handle('collision', collided_entity)
 
 
 class InputMovementComponent(object):
@@ -137,7 +137,23 @@ class DrawHitBoxComponent(object):
         
     def handle_draw(self, entity, surface):
         pygame.draw.rect(surface, (255, 0, 255), (entity.x, entity.y, entity.width, entity.height))
+
+
+class PlayerCollisionComponent(object):
     
+    def add(self, entity):
+        entity.register_handler('collision', self.handle_collision)
+
+    def remove(self, entity):
+        entity.unregister_handler('collision', self.handle_collision)
+    
+    def handle_collision(self, entity, other):
+        if 'player' in other.tags:
+            entity.x = entity.static.x
+            entity.y = entity.static.y
+            other.x = other.static.x
+            other.y = other.static.y
+        
         
 def verify_attrs(entity, attrs):
     missing_attrs = []
