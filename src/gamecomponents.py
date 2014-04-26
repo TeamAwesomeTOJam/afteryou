@@ -17,7 +17,7 @@ class SmokeScreenComponent(object):
         entity.unregister_handler('update', self.handle_update)
     
     def handle_input(self, entity, event):
-        if event.action == 'SMOKE_SCREEN' and event.value and entity.smoke_screen_cooldown <= 0:
+        if event.action == 'SMOKE_SCREEN' and event.value and entity.smoke_screen_cooldown <= 0 and entity.chasing:
             p = get_midpoint(entity)
             pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), 200)
             entity.smoke_screen_cooldown = 10
@@ -42,7 +42,7 @@ class SpawnDecoyComponent(object):
             entity.decoy_cooldown -= dt
     
     def handle_input(self, entity, event):
-        if event.action == 'CREATE_DECOY' and event.value and entity.decoy_cooldown <= 0:
+        if event.action == 'CREATE_DECOY' and event.value and entity.decoy_cooldown <= 0 and entity.chasing:
             if entity.dx or entity.dy:
                 d = (entity.dx,entity.dy)
             else:
@@ -98,7 +98,7 @@ class MinefieldComponent(object):
             entity.minefield_cooldown -= dt
     
     def handle_input(self, entity, event):
-        if event.action == 'PLACE_MINEFIELD' and event.value and entity.minefield_cooldown <= 0:
+        if event.action == 'PLACE_MINEFIELD' and event.value and entity.minefield_cooldown <= 0 and not entity.chasing:
             m = get_midpoint(entity)
             for r in range(30,250,50):
                 for a in range(0,360,20):
