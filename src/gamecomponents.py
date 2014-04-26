@@ -19,4 +19,10 @@ class SmokeScreenComponent(object):
     
     def handle_update(self, entity, dt):
         entity.smoke_screen_cooldown -= dt
+        
+        
+class DecoyMovementComponent(object):
+    
+    def add(self, entity):
+        verify_attrs(entity, ['x', 'y'])
              
