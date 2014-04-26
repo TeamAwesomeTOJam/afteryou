@@ -2,6 +2,7 @@ import game
 import pygame
 from component import verify_attrs
 from vec2d import Vec2d
+from entity import Entity
 
 class SmokeScreenComponent(object):
     
@@ -20,7 +21,28 @@ class SmokeScreenComponent(object):
             entity.smoke_screen_cooldown = 10
     
     def handle_update(self, entity, dt):
-        entity.smoke_screen_cooldown -= dt
+        if entity.smoke_screen_cooldown >= 0:
+            entity.smoke_screen_cooldown -= dt
+
+class SpawnDecoyComponent(object):
+    
+    def add(self, entity):
+        verify_attrs(entity, ['x','y','dx','dy',('decoy_cooldown',0), 'color'])
+        entity.register_handler('update', self.handle_update)
+        entity.register_handler('input', self.handle_input)
+    
+    def handle_update(self, entity, dt):
+        if entity.decoy_cooldown >= 0:
+            entity.decoy_cooldown -= dt
+    
+    def handle_input(self, entity, event):
+        if event.action == 'CREATE_DECOY' and event.value and entity.decoy_cooldown <= 0:
+            if entity.dx or entity.dy:
+                d = (entity.dx,entity.dy)
+            else:
+                d = (1,0)
+            game.get_game().entity_manager.add_entity(Entity("decoy",follow_entity = entity, color = entity.color, mirror_dir = d, x = entity.x, y = entity.y))
+            entity.decoy_cooldown = 10
         
         
 class DecoyMovementComponent(object):

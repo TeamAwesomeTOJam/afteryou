@@ -16,6 +16,7 @@
         "InputMovementComponent",
         "DrawCircleComponent",
         "PlayerCollisionComponent",
-        "SmokeScreenComponent"
+        "SmokeScreenComponent",
+        "SpawnDecoyComponent"
     ]
 }

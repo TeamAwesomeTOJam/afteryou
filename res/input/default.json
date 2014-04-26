@@ -8,6 +8,7 @@
     "KEY 97"  : ["player1", "LEFT"],
     "KEY 100" : ["player1", "RIGHT"],
     "KEY 113" : ["player1", "SMOKE_SCREEN"],
+    "KEY 101" : ["player1", "CREATE_DECOY"],
  
     "0 AXIS -1" : ["player1", "UP"],
     "0 AXIS +1" : ["player1", "DOWN"],

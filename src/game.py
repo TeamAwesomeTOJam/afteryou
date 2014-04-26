@@ -14,7 +14,7 @@ from component import (AnimationComponent,
 
 from graphicscomponents import DrawCircleComponent
 
-from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent
+from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent, SpawnDecoyComponent
 
 from entity import Entity
 
@@ -51,6 +51,7 @@ class Game(object):
         self.component_manager.register_component('PlayerCollisionComponent', PlayerCollisionComponent())
         self.component_manager.register_component('DecoyMovementComponent', DecoyMovementComponent())
         self.component_manager.register_component('SelfDestructComponent', SelfDestructComponent())
+        self.component_manager.register_component('SpawnDecoyComponent', SpawnDecoyComponent())
         
         self.entity_manager = EntityManager()
             
@@ -70,7 +71,6 @@ class Game(object):
         p2 = Entity("player2")
         self.entity_manager.add_entity(p1)
         self.entity_manager.add_entity(p2)
-        self.entity_manager.add_entity(Entity("decoy",follow_entity = p1, color = p1.color, mirror_dir = (1,0), x = p1.x, y = p1.y))
         
         self.background_view.draw()
 
