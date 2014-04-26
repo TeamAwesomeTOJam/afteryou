@@ -4,14 +4,15 @@ import game
 class AttractMode(object):
     
     def enter(self):
-        pass
+        self.music = game.get_game().resource_manager.get('sound', 'Prelude.ogg')
+        self.music.play()
     
     def leave(self):
-        pass
+        self.music.stop()
     
     def handle_event(self, event):
         if event.action not in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
-            game.get_game().mode = PlayMode()
+            game.get_game().change_mode(PlayMode())
         
     def update(self, dt):
         pass
@@ -21,9 +22,10 @@ class AttractMode(object):
     
 
 class PlayMode(object):
-    
+
     def enter(self):
-        pass
+        self.music = game.get_game().resource_manager.get('sound', 'Main Body.ogg')
+        self.music.play(loops=-1)
     
     def leave(self):
         player1 = game.get_game().entity_manager.get_by_name('player1')
@@ -48,6 +50,7 @@ class PlayMode(object):
             game.get_game().entity_manager.remove_entity(decoy)
             
         timer.time_remaining = timer.time_limit
+        self.music.stop()
 
     def handle_event(self, event):
         entity = game.get_game().entity_manager.get_by_name(event.target)
@@ -67,10 +70,12 @@ class BetweenRoundMode(object):
         self.ttl = 3
     
     def enter(self):
+        self.music = game.get_game().resource_manager.get('sound', 'Drums Intro.ogg')
+        self.music.play(loops=-1)
         game.get_game().background_view.draw()
         
     def leave(self):
-        pass
+        self.music.stop()
     
     def handle_event(self, event):
         pass
@@ -78,7 +83,7 @@ class BetweenRoundMode(object):
     def update(self, dt):
         self.ttl -= dt
         if self.ttl < 0:
-            game.get_game().mode = PlayMode()
+            game.get_game().change_mode(PlayMode())
     
     def draw(self):
         pass
