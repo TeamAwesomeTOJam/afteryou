@@ -2,6 +2,19 @@
     "speed" : 200,
     "height" : 40,
     "width" : 40,
+    "smoke_screen_cooldown_time" : 10,
+    "smoke_screen_rad" : 200,
+    "decoy_cooldown_time" : 10,
+    
+    "minefield_cooldown_time" : 10,
+    "minefield_min_rad" : 30,
+    "minefield_max_rad" : 250,
+    "minefield_rad_density" : 50,
+    "minefield_ang_density" : 20,
+    
+    "speed_boost_speed" : 300,
+    "speed_boost_duration_time" : 2,
+    "speed_boost_activation_cooldown_time" : 10,
     
     "tags" : [
         "draw",

@@ -8,7 +8,7 @@ from component import get_midpoint
 class SmokeScreenComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['color', 'x', 'y', 'width', 'height', ('smoke_screen_cooldown', 0)])
+        verify_attrs(entity, ['smoke_screen_rad', 'smoke_screen_cooldown_time', 'color', 'x', 'y', 'width', 'height', ('smoke_screen_cooldown', 0)])
         entity.register_handler('action', self.handle_action)
         entity.register_handler('update', self.handle_update)
  
@@ -19,8 +19,8 @@ class SmokeScreenComponent(object):
     def handle_action(self, entity, action):
         if action == 'SMOKE_SCREEN' and entity.smoke_screen_cooldown <= 0:
             p = get_midpoint(entity)
-            pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), 200)
-            entity.smoke_screen_cooldown = 10
+            pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), entity.smoke_screen_rad)
+            entity.smoke_screen_cooldown = entity.smoke_screen_cooldown_time
     
     def handle_update(self, entity, dt):
         if entity.smoke_screen_cooldown >= 0:
@@ -29,7 +29,7 @@ class SmokeScreenComponent(object):
 class SpawnDecoyComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['x', 'y', 'dx', 'dy',('decoy_cooldown',0), 'color'])
+        verify_attrs(entity, ['decoy_cooldown_time', 'x', 'y', 'dx', 'dy',('decoy_cooldown',0), 'color'])
         entity.register_handler('update', self.handle_update)
         entity.register_handler('action', self.handle_action)
     
@@ -48,7 +48,7 @@ class SpawnDecoyComponent(object):
             else:
                 d = (1,0)
             game.get_game().entity_manager.add_entity(Entity("decoy",follow_entity = entity, color = entity.color, mirror_dir = d, x = entity.x, y = entity.y))
-            entity.decoy_cooldown = 10
+            entity.decoy_cooldown = entity.decoy_cooldown_time
         
         
 class DecoyMovementComponent(object):
@@ -85,7 +85,7 @@ class  SelfDestructComponent(object):
 class MinefieldComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['x', 'y', 'width', 'height', ('minefield_cooldown',0), 'color'])
+        verify_attrs(entity, ['minefield_ang_density', 'minefield_rad_density', 'minefield_max_rad', 'minefield_min_rad', 'minefield_cooldown_time', 'x', 'y', 'width', 'height', ('minefield_cooldown',0), 'color'])
         entity.register_handler('update', self.handle_update)
         entity.register_handler('action', self.handle_action)
     
@@ -100,19 +100,19 @@ class MinefieldComponent(object):
     def handle_action(self, entity, action):
         if action == 'PLACE_MINEFIELD' and entity.minefield_cooldown <= 0:
             m = get_midpoint(entity)
-            for r in range(30,250,50):
-                for a in range(0,360,20):
-                    v = Vec2d(0,1)
+            for r in range(entity.minefield_min_rad, entity.minefield_max_rad, entity.minefield_rad_density):
+                for a in range(0, 360, entity.minefield_ang_density):
+                    v = Vec2d(0, 1)
                     v.length = r
                     v.angle = a
                     p = m + v
                     pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), 5)
-            entity.minefield_cooldown = 10
+            entity.minefield_cooldown = entity.minefield_cooldown_time
     
 class SpeedBoostComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['speed', ('speed_boost_activation_cooldown',0), ('base_speed', entity.speed), ('speed_boost_time', 0)])
+        verify_attrs(entity, ['speed_boost_activation_cooldown_time', 'speed_boost_duration_time', 'speed_boost_speed', 'speed', ('speed_boost_activation_cooldown',0), ('base_speed', entity.speed), ('speed_boost_time', 0)])
         entity.register_handler('update', self.handle_update)
         entity.register_handler('action', self.handle_action)
     
@@ -130,9 +130,9 @@ class SpeedBoostComponent(object):
     
     def handle_action(self, entity, action):
         if action == 'SPEED_BOOST' and entity.speed_boost_activation_cooldown <= 0:
-            entity.speed = entity.speed * 1.5
-            entity.speed_boost_time = 3
-            entity.speed_boost_activation_cooldown = 10
+            entity.speed = entity.speed_boost_speed
+            entity.speed_boost_time = entity.speed_boost_duration_time
+            entity.speed_boost_activation_cooldown = entity.speed_boost_activation_cooldown_time
             
 class ButtonInterpreterComponent(object):
     
