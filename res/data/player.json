@@ -5,7 +5,7 @@
     "speed" : 120,
     "color" : [255,0,0],
     "radius" : 20,
-    "name" : "player1,
+    "name" : "player1",
     
     "tags" : [
         "draw",
@@ -13,7 +13,7 @@
         "input"
     ],
             
-    "componenets" : [
+    "components" : [
         "MovementComponent",
         "InputMovementComponent",
         "DrawCircleComponent"
