@@ -6,8 +6,8 @@
     "KEY 115" : ["player1", "DOWN"],
     "KEY 97"  : ["player1", "LEFT"],
     "KEY 100" : ["player1", "RIGHT"],
-    "KEY 82"  : ["player2", "UP"],
-    "KEY 81"  : ["player2", "DOWN"],
-    "KEY 80"  : ["player2", "LEFT"],
-    "KEY 79"  : ["player2", "RIGHT"]
+    "KEY 105" : ["player2", "UP"],
+    "KEY 107" : ["player2", "DOWN"],
+    "KEY 106" : ["player2", "LEFT"],
+    "KEY 108" : ["player2", "RIGHT"]
  }

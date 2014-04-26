@@ -59,7 +59,8 @@ class Game(object):
        
         
     def run(self, mode):
-        self.entity_manager.add_entity(Entity("player"))
+        self.entity_manager.add_entity(Entity("player1"))
+        self.entity_manager.add_entity(Entity("player2"))
         #pygame.display.toggle_fullscreen()
         self.mode = mode
 
