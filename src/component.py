@@ -62,7 +62,7 @@ class AnimationComponent(object):
 class MovementComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['x', 'y', 'width', 'height', ('last_good_x', entity.x), ('last_good_y', entity.y)])
+        verify_attrs(entity, ['x', 'y', 'width', 'height', ('last_good_x', entity.x), ('last_good_y', entity.y), 'speed'])
         entity.register_handler('update', self.handle_update)
     
     def remove(self, entity):
@@ -72,8 +72,8 @@ class MovementComponent(object):
         if entity.dx or entity.dy:
             entity.last_good_x = entity.x
             entity.last_good_y = entity.y
-            entity.x += entity.dx * dt
-            entity.y += entity.dy * dt
+            entity.x += entity.dx * dt * entity.speed
+            entity.y += entity.dy * dt * entity.speed
             bound = lambda a,b,x : min(b,max(a,x))
             res = game.get_game().screen_size
             entity.x = bound(0, res[0] - entity.width, entity.x)
@@ -88,7 +88,7 @@ class MovementComponent(object):
 class InputMovementComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, [('dx', 0), ('dy', 0), 'speed'])
+        verify_attrs(entity, [('dx', 0), ('dy', 0)])
         entity.facing = 1
               
         entity.register_handler('input', self.handle_input)
@@ -98,13 +98,13 @@ class InputMovementComponent(object):
     
     def handle_input(self, entity, event):
         if event.action == 'RIGHT':
-            entity.dx = event.value * entity.speed
+            entity.dx = event.value
         elif event.action == 'UP':
-            entity.dy = -1 * event.value * entity.speed
+            entity.dy = -1 * event.value
         elif event.action == 'LEFT':
-            entity.dx = -1 * event.value * entity.speed
+            entity.dx = -1 * event.value
         elif event.action == 'DOWN':
-            entity.dy = event.value * entity.speed 
+            entity.dy = event.value
         
         if entity.dx != 0 or entity.dy != 0:
             direction = Vec2d(entity.dx, entity.dy)
