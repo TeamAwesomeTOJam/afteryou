@@ -73,12 +73,8 @@ class Game(object):
         p2 = Entity("player2")
         self.entity_manager.add_entity(p1)
         self.entity_manager.add_entity(p2)
-<<<<<<< HEAD
-=======
-        self.entity_manager.add_entity(Entity("decoy",follow_entity = p1, color = p1.color, mirror_dir = (1,0), x = p1.x, y = p1.y))
         self.entity_manager.add_entity(Entity("scoreui-player1"))
         self.entity_manager.add_entity(Entity("scoreui-player2"))
->>>>>>> branch 'master' of https://github.com/jdoda/afteryou.git
         
         self.background_view.draw()
 
