@@ -13,6 +13,8 @@ from component import (AnimationComponent,
 
 from graphicscomponents import DrawCircleComponent
 
+from entity import Entity
+
 from render import Render
 from input import InputManager
 
@@ -54,8 +56,10 @@ class Game(object):
         self.input_manager = InputManager()
         
         self.renderer = Render()
+       
         
     def run(self, mode):
+        self.entity_manager.add_entity(Entity("player"))
         #pygame.display.toggle_fullscreen()
         self.mode = mode
 

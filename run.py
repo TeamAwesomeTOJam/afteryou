@@ -1,6 +1,8 @@
 #! /bin/env python
 
 import os, sys
+sys.path.append('src')
+
 import game
 import mode
 
