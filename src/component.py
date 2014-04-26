@@ -153,7 +153,7 @@ class PlayerCollisionComponent(object):
             entity.y = entity.static.y
             other.x = other.static.x
             other.y = other.static.y
-            game.get_game().view.draw()
+            game.get_game().background_view.draw()
                     
         
 def verify_attrs(entity, attrs):

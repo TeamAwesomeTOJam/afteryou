@@ -18,7 +18,7 @@ from gamecomponents import SmokeScreenComponent
 
 from entity import Entity
 
-from render import View, BackgroundLayer
+from render import View, BackgroundLayer, SimpleLayer
 from input import InputManager
 
 
@@ -60,13 +60,14 @@ class Game(object):
 
         self.input_manager = InputManager()
 
-        self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [BackgroundLayer()])
+        self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [BackgroundLayer()])
+        self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SimpleLayer('draw'), SimpleLayer('ui')])
         
     def run(self, mode):
         self.entity_manager.add_entity(Entity("player1"))
         self.entity_manager.add_entity(Entity("player2"))
         
-        self.view.draw()
+        self.background_view.draw()
 
         self.mode = mode
 

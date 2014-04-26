@@ -72,3 +72,13 @@ class BackgroundLayer(object):
             r.left = x
             pygame.draw.rect(view.surface, game.get_game().entity_manager.get_by_name('player' + str(1+p)).color, r)
             p = (p + 1) % 2
+            
+
+class SimpleLayer(object):
+    
+    def __init__(self, tag):
+        self.tag = tag
+        
+    def draw(self, view):        
+        for entity in game.get_game().entity_manager.get_by_tag(self.tag):
+            entity.handle('draw', view.surface, lambda x, y : (x, y))

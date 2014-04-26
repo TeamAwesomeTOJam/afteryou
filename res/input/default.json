@@ -7,13 +7,13 @@
     "KEY 115" : ["player1", "DOWN"],
     "KEY 97"  : ["player1", "LEFT"],
     "KEY 100" : ["player1", "RIGHT"],
-    
     "KEY 113" : ["player1", "SMOKE_SCREEN"],
  
     "0 AXIS -1" : ["player1", "UP"],
     "0 AXIS +1" : ["player1", "DOWN"],
     "0 AXIS -0"  : ["player1", "LEFT"],
     "0 AXIS +0" : ["player1", "RIGHT"],
+    "0 BUTTON 0" : ["player1", "SMOKE_SCREEN"],
    
     "KEY 105" : ["player2", "UP"],
     "KEY 107" : ["player2", "DOWN"],
@@ -23,5 +23,6 @@
     "1 AXIS -1" : ["player2", "UP"],
     "1 AXIS +1" : ["player2", "DOWN"],
     "1 AXIS -0" : ["player2", "LEFT"],
-    "1 AXIS +0" : ["player2", "RIGHT"]
+    "1 AXIS +0" : ["player2", "RIGHT"],
+    "1 BUTTON 0" : ["player2", "SMOKE_SCREEN"]
  }
