@@ -45,29 +45,30 @@ class Game(object):
         
         pygame.mixer.pre_init(frequency=44100)
         pygame.init()
-        
+        pygame.display.set_caption('After You!')
+                                   
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(self.screen_size)
         
         self.component_manager = componentmanager.ComponentManager()
-        self.component_manager.register_component('MovementComponent', MovementComponent())
-        self.component_manager.register_component('ExampleComponent', ExampleComponent())
-        self.component_manager.register_component('AnimationComponent', AnimationComponent())
-        self.component_manager.register_component('DrawComponent', DrawComponent())
-        self.component_manager.register_component('InputMovementComponent', InputMovementComponent())
-        self.component_manager.register_component('DrawHitBoxComponent', DrawHitBoxComponent()) 
-        self.component_manager.register_component('DrawCircleComponent', DrawCircleComponent())
-        self.component_manager.register_component('SmokeScreenComponent', SmokeScreenComponent())
-        self.component_manager.register_component('PlayerCollisionComponent', PlayerCollisionComponent())
-        self.component_manager.register_component('DecoyMovementComponent', DecoyMovementComponent())
-        self.component_manager.register_component('SelfDestructComponent', SelfDestructComponent())
-        self.component_manager.register_component('SpawnDecoyComponent', SpawnDecoyComponent())
-        self.component_manager.register_component('DrawScoreComponent', DrawScoreComponent())
-        self.component_manager.register_component('MinefieldComponent', MinefieldComponent())
-        self.component_manager.register_component('DrawTimerComponent', DrawTimerComponent())
-        self.component_manager.register_component('UpdateTimerComponent', UpdateTimerComponent())
-        self.component_manager.register_component('SpeedBoostComponent', SpeedBoostComponent())
-        self.component_manager.register_component('ButtonInterpreterComponent', ButtonInterpreterComponent())
+        self.component_manager.register_component(MovementComponent())
+        self.component_manager.register_component(ExampleComponent())
+        self.component_manager.register_component(AnimationComponent())
+        self.component_manager.register_component(DrawComponent())
+        self.component_manager.register_component(InputMovementComponent())
+        self.component_manager.register_component(DrawHitBoxComponent()) 
+        self.component_manager.register_component(DrawCircleComponent())
+        self.component_manager.register_component(SmokeScreenComponent())
+        self.component_manager.register_component(PlayerCollisionComponent())
+        self.component_manager.register_component(DecoyMovementComponent())
+        self.component_manager.register_component(SelfDestructComponent())
+        self.component_manager.register_component(SpawnDecoyComponent())
+        self.component_manager.register_component(DrawScoreComponent())
+        self.component_manager.register_component(MinefieldComponent())
+        self.component_manager.register_component(DrawTimerComponent())
+        self.component_manager.register_component(UpdateTimerComponent())
+        self.component_manager.register_component(SpeedBoostComponent())
+        self.component_manager.register_component(ButtonInterpreterComponent())
         
         self.entity_manager = EntityManager()
             
@@ -79,7 +80,7 @@ class Game(object):
 
         self.input_manager = InputManager()
 
-        self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SolidBackgroundLayer((0,0,0))])
+        self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [BackgroundLayer()])
         self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SimpleLayer('draw'), SimpleLayer('ui')])
         
     def run(self, mode):
@@ -117,7 +118,6 @@ class Game(object):
             self.entity_manager.cleanup()
             
             pygame.display.flip()
-            pygame.display.set_caption('fps: %.0d' % self.clock.get_fps())
             
     def change_mode(self, new_mode):
         if self.mode:
