@@ -1,9 +1,5 @@
 {
-<<<<<<< Upstream, based on origin/master
     "speed" : 200,
-=======
-    "speed" : 120,
->>>>>>> a691822 Starting to work on some UI stuff.
     "height" : 40,
     "width" : 40,
     
