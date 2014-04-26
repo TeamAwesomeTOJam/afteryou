@@ -4,10 +4,9 @@
     "x_input" : 0 , "y_input" : 0, 
     "speed" : 120,
     "color" : [255,0,0],
-    "radius" : 20,
     "name" : "player1",
-    "height" : 10,
-    "width" : 10,
+    "height" : 40,
+    "width" : 40,
     
     "tags" : [
         "draw",
