@@ -75,7 +75,6 @@ class BackgroundLayer(object):
         for x in xrange(0, view.area.width, 100):
             r.left = x
             pygame.draw.rect(view.surface, game.get_game().entity_manager.get_by_name('player' + str(1+p)).color, r)
-            print "Ger"
             p = (p + 1) % 2
             
 
