@@ -1,5 +1,6 @@
 {
     "name" : "player2",
+    "chasing" : false,
     "x" : 1170, "y" : 360,
     "color" : [100,100,255],
     

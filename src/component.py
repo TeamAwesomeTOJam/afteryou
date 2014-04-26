@@ -81,7 +81,6 @@ class MovementComponent(object):
             
             collisions = game.get_game().entity_manager.get_in_area('collision', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
             for collided_entity in collisions:
-                collided_entity.handle('collision', entity)
                 entity.handle('collision', collided_entity)
 
 
@@ -149,6 +148,11 @@ class PlayerCollisionComponent(object):
     
     def handle_collision(self, entity, other):
         if 'player' in other.tags:
+            if entity.chasing:
+                entity.score += 1
+                entity.chasing = False
+                other.chasing = True
+            
             entity.x = entity.static.x
             entity.y = entity.static.y
             other.x = other.static.x
