@@ -1,7 +1,8 @@
-import game
 import pygame
 from math import *
 
+import game
+import mode
 from vec2d import Vec2d
 
 
@@ -210,6 +211,8 @@ def end_round():
     player2.y = player2.static.y
     timer.time_remaining = timer.time_limit
     game.get_game().background_view.draw()
+    
+    game.get_game().mode = mode.BetweenRoundMode()
     
 
     
