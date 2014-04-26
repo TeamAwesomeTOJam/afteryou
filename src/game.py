@@ -13,9 +13,14 @@ from component import (AnimationComponent,
                        PlayerCollisionComponent)
 
 from graphicscomponents import DrawCircleComponent
+<<<<<<< HEAD
 
 from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent, SpawnDecoyComponent
 
+=======
+from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent
+from uicomponents import DrawScoreComponent
+>>>>>>> branch 'master' of https://github.com/jdoda/afteryou.git
 from entity import Entity
 
 from render import View, BackgroundLayer, SimpleLayer
@@ -52,6 +57,7 @@ class Game(object):
         self.component_manager.register_component('DecoyMovementComponent', DecoyMovementComponent())
         self.component_manager.register_component('SelfDestructComponent', SelfDestructComponent())
         self.component_manager.register_component('SpawnDecoyComponent', SpawnDecoyComponent())
+        self.component_manager.register_component('DrawScoreComponent', DrawScoreComponent())
         
         self.entity_manager = EntityManager()
             
@@ -71,6 +77,12 @@ class Game(object):
         p2 = Entity("player2")
         self.entity_manager.add_entity(p1)
         self.entity_manager.add_entity(p2)
+<<<<<<< HEAD
+=======
+        self.entity_manager.add_entity(Entity("decoy",follow_entity = p1, color = p1.color, mirror_dir = (1,0), x = p1.x, y = p1.y))
+        self.entity_manager.add_entity(Entity("scoreui-player1"))
+        self.entity_manager.add_entity(Entity("scoreui-player2"))
+>>>>>>> branch 'master' of https://github.com/jdoda/afteryou.git
         
         self.background_view.draw()
 
