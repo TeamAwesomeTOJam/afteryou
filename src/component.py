@@ -79,9 +79,9 @@ class MovementComponent(object):
             entity.y = bound(0,res[1],entity.y)
             game.get_game().entity_manager.update_position(entity)
             
-            collisions = game.get_game().entity_manager.get_in_area('collision', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
-            for collided_entity in collisions:
-                entity.handle('collision', collided_entity)
+        collisions = game.get_game().entity_manager.get_in_area('collision', (entity.x, entity.y, entity.width, entity.height)) - {entity} 
+        for collided_entity in collisions:
+            entity.handle('collision', collided_entity)
 
 
 class InputMovementComponent(object):
@@ -141,18 +141,17 @@ class DrawHitBoxComponent(object):
 class PlayerCollisionComponent(object):
     
     def add(self, entity):
+        verify_attrs(entity, ['x', 'y', ('score', 0), ('chasing', False)])
         entity.register_handler('collision', self.handle_collision)
 
     def remove(self, entity):
         entity.unregister_handler('collision', self.handle_collision)
     
     def handle_collision(self, entity, other):
-        if 'player' in other.tags:
-            if entity.chasing:
-                entity.score += 1
-                entity.chasing = False
-                other.chasing = True
-            
+        if 'player' in other.tags and entity.chasing:
+            entity.score += 1
+            entity.chasing = False
+            other.chasing = True
             entity.x = entity.static.x
             entity.y = entity.static.y
             other.x = other.static.x

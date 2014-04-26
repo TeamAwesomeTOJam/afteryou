@@ -13,9 +13,8 @@ from component import (AnimationComponent,
                        PlayerCollisionComponent)
 
 from graphicscomponents import DrawCircleComponent
-
 from gamecomponents import SmokeScreenComponent, DecoyMovementComponent, SelfDestructComponent
-
+from uicomponents import DrawScoreComponent
 from entity import Entity
 
 from render import View, BackgroundLayer, SimpleLayer
@@ -51,6 +50,7 @@ class Game(object):
         self.component_manager.register_component('PlayerCollisionComponent', PlayerCollisionComponent())
         self.component_manager.register_component('DecoyMovementComponent', DecoyMovementComponent())
         self.component_manager.register_component('SelfDestructComponent', SelfDestructComponent())
+        self.component_manager.register_component('DrawScoreComponent', DrawScoreComponent())
         
         self.entity_manager = EntityManager()
             
@@ -71,6 +71,8 @@ class Game(object):
         self.entity_manager.add_entity(p1)
         self.entity_manager.add_entity(p2)
         self.entity_manager.add_entity(Entity("decoy",follow_entity = p1, color = p1.color, mirror_dir = (1,0), x = p1.x, y = p1.y))
+        self.entity_manager.add_entity(Entity("scoreui-player1"))
+        self.entity_manager.add_entity(Entity("scoreui-player2"))
         
         self.background_view.draw()
 
