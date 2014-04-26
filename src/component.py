@@ -203,12 +203,16 @@ def end_round():
         
     winner.score += 1
 
-    player1.chasing = False if player1.chasing else True
-    player2.chasing = False if player2.chasing else True   
-    player1.x = player1.static.x
-    player1.y = player1.static.y
-    player2.x = player2.static.x
-    player2.y = player2.static.y
+    for player in [player1, player2]:
+        player.chasing = False if player.chasing else True   
+        player.x = player.static.x
+        player.y = player.static.y
+        player.dx = 0
+        player.dy = 0
+        
+    for decoy in game.get_game().entity_manager.get_by_tag('decoy'):
+        game.get_game().entity_manager.remove_entity(decoy)
+        
     timer.time_remaining = timer.time_limit
     game.get_game().background_view.draw()
     

@@ -26,7 +26,7 @@ from uicomponents import DrawScoreComponent, DrawTimerComponent, UpdateTimerComp
 
 from entity import Entity
 
-from render import View, BackgroundLayer, SimpleLayer
+from render import View, BackgroundLayer, SimpleLayer, SolidBackgroundLayer
 from input import InputManager
 
 
@@ -40,6 +40,7 @@ class Game(object):
         _game = self
         
         self.mode = None
+        self.running = False
         self.screen_size = screen_size
 
         pygame.init()
@@ -77,7 +78,7 @@ class Game(object):
 
         self.input_manager = InputManager()
 
-        self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [BackgroundLayer()])
+        self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SolidBackgroundLayer((0,0,0))])
         self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SimpleLayer('draw'), SimpleLayer('ui')])
         
     def run(self, mode):
@@ -92,15 +93,16 @@ class Game(object):
         self.background_view.draw()
 
         self.mode = mode
+        self.running = True
 
-        while True:
+        while self.running:
             dt = self.clock.tick(60) / 1000.0
             
             events = self.input_manager.process_events()
             for event in events:
                 if event.target == 'GAME':
                     if event.action == 'QUIT' and event.value > 0:
-                        sys.exit()
+                        self.running = False
                     elif event.action == 'FULLSCREEN' and event.value > 0:
                         pygame.display.toggle_fullscreen()
                     elif event.action == 'RELOAD' and event.value > 0:
