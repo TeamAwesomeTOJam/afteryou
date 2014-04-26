@@ -87,7 +87,7 @@ class MovementComponent(object):
 class InputMovementComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, [('dx', 0), ('dy', 0)])
+        verify_attrs(entity, [('dx', 0), ('dy', 0), 'speed'])
         entity.facing = 1
               
         entity.register_handler('input', self.handle_input)

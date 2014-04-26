@@ -14,7 +14,7 @@ from component import (AnimationComponent,
 
 from graphicscomponents import DrawCircleComponent
 
-from gamecomponents import SmokeScreenComponent
+from gamecomponents import SmokeScreenComponent, DecoyMovementComponent
 
 from entity import Entity
 
@@ -49,6 +49,7 @@ class Game(object):
         self.component_manager.register_component('DrawCircleComponent', DrawCircleComponent())
         self.component_manager.register_component('SmokeScreenComponent', SmokeScreenComponent())
         self.component_manager.register_component('PlayerCollisionComponent', PlayerCollisionComponent())
+        self.component_manager.register_component('DecoyMovementComponent', DecoyMovementComponent())
         
         self.entity_manager = EntityManager()
             
@@ -64,8 +65,11 @@ class Game(object):
         self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SimpleLayer('draw'), SimpleLayer('ui')])
         
     def run(self, mode):
-        self.entity_manager.add_entity(Entity("player1"))
-        self.entity_manager.add_entity(Entity("player2"))
+        p1 = Entity("player1")
+        p2 = Entity("player2")
+        self.entity_manager.add_entity(p1)
+        self.entity_manager.add_entity(p2)
+        self.entity_manager.add_entity(Entity("decoy",follow_entity = p1, color = p1.color, mirror_dir = (1,0), x = p1.x, y = p1.y))
         
         self.background_view.draw()
 
