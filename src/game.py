@@ -22,6 +22,8 @@ from input import InputManager
 
 _game = None
 
+USE_RENDERER = False
+
 
 class Game(object):
     
@@ -35,8 +37,10 @@ class Game(object):
         pygame.init()
         
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode(self.screen_size, pygame.OPENGL | pygame.DOUBLEBUF)
-        self.screen = pygame.display.set_mode(self.screen_size)
+        if USE_RENDERER:
+            self.screen = pygame.display.set_mode(self.screen_size, pygame.OPENGL | pygame.DOUBLEBUF)
+        else:
+            self.screen = pygame.display.set_mode(self.screen_size)
         
         self.component_manager = componentmanager.ComponentManager()
         self.component_manager.register_component('MovementComponent', MovementComponent())
@@ -58,7 +62,9 @@ class Game(object):
 
         self.input_manager = InputManager()
         
-        self.renderer = Render()
+        if USE_RENDERER:
+            self.renderer = Render()
+            self.renderer.resize(self.screen_size)
        
         
     def run(self, mode):
@@ -93,6 +99,8 @@ class Game(object):
             
             self.mode.update(dt)
             self.mode.draw()
+            if USE_RENDERER:
+                self.renderer.render()
             
             pygame.display.flip()
             pygame.display.set_caption('fps: %.0d' % self.clock.get_fps())
