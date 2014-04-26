@@ -1,0 +1,20 @@
+{
+    "x" : 0, "y" : 0,
+    "dx" : 0, "dy" : 0,
+    "x_input" : 0 , "y_input" : 0, 
+    "speed" : 120,
+    "color" : [255,0,0],
+    "radius" : 20,
+    
+    "tags" : [
+        "draw",
+        "update",
+        "input"
+    ],
+            
+    "componenets" : [
+        "MovementComponent",
+        "InputMovementComponent",
+        "DrawCircleComponent"
+    ]
+}
