@@ -5,6 +5,4 @@
     
     "includes" : ["player"],
     
-    "components+" : ["SmokeScreenComponent"]
-    
 }
