@@ -17,6 +17,7 @@
     "0 BUTTON 0" : ["player1", "SMOKE_SCREEN"],
     "0 BUTTON 1" : ["player1", "CREATE_DECOY"],
     "0 BUTTON 2" : ["player1", "PLACE_MINEFIELD"],
+    "0 BUTTON 3" : ["player1", "SPEED_BOOST"],
    
     "KEY 105" : ["player2", "UP"],
     "KEY 107" : ["player2", "DOWN"],
@@ -31,5 +32,6 @@
     "1 AXIS +0" : ["player2", "RIGHT"],
     "1 BUTTON 0" : ["player2", "SMOKE_SCREEN"],
     "1 BUTTON 1" : ["player2", "CREATE_DECOY"],
-    "1 BUTTON 2" : ["player2", "PLACE_MINEFIELD"]
+    "1 BUTTON 2" : ["player2", "PLACE_MINEFIELD"],
+    "1 BUTTON 3" : ["player2", "SPEED_BOOST"]
  }
