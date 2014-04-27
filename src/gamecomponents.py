@@ -89,7 +89,7 @@ class  SelfDestructComponent(object):
 class MinefieldComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['minefield_width', 'minefield_ang_density', 'minefield_rad_density', 'minefield_max_rad', 'minefield_min_rad', 'minefield_cooldown_time', 'x', 'y', 'dx', 'dy', 'width', 'height', ('minefield_cooldown',0), 'color'])
+        verify_attrs(entity, ['minefield_ang_density', 'minefield_rad_density', 'minefield_max_rad', 'minefield_min_rad', 'minefield_cooldown_time', 'x', 'y', 'dx', 'dy', 'width', 'height', ('minefield_cooldown',0), 'color'])
         entity.register_handler('update', self.handle_update)
         entity.register_handler('action', self.handle_action)
     
