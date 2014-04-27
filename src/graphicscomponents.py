@@ -13,6 +13,8 @@ class DrawCircleComponent(object):
         entity.unregister_handler('draw', self.handle_draw)
         
     def handle_draw(self, entity, surface, transform):
+        print entity.x,entity.y
         screen_x, screen_y = transform(entity.x, entity.y)
         r = pygame.Rect(int(screen_x), int(screen_y), entity.height, entity.width)
         pygame.draw.ellipse(surface, entity.color, r)
+        game.get_game().renderer.appendCircle( (entity.color,entity.x,entity.y, entity.height/2) )

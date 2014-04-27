@@ -109,14 +109,17 @@ class GLRenderer:
         self.fbo = FrameBufferObject(fbox,fboy)
         self.bg_fbo = FrameBufferObject(fbox,fboy)
         self.finalRenderShader();
+#        self.resize()
     
     def finalRenderShader(self):
         vert_shader = createAndCompileShader('''
 
                 #version 120
                 varying vec2 st;
+                uniform float aspectRatio;
                 void main() {
                 gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                //gl_Position.y = gl_Position.y * aspectRatio;
                     st = gl_MultiTexCoord0.st;
                 }
                 ''',GL_VERTEX_SHADER)
@@ -165,6 +168,12 @@ class GLRenderer:
         x,y = tup
         self.x = x
         self.y = y
+        glViewport(0,0,x,y)
+        glUseProgram(self.player_shader)
+        loc = glGetUniformLocation(self.player_shader,"aspectRatio")
+        glUniform1f(loc,float(y)/x)
+        glUseProgram(0)
+
         #gluOrtho2D(-1,1,-1,1)
     
     def drawCircle(self,x,y,rad):
@@ -298,6 +307,11 @@ class GLRenderer:
         self.circle_queue = []
         self.rectangle_queue = []
 
+    def appendCircle(self,color, px, py, rad):
+        self.circle_queue.append( (color,px,py,rad) )
+
+    def appendRect(self,color, px, py, w,h):
+        self.rectangle_queue.append( (color,px,py,w,h) )
 
 
 

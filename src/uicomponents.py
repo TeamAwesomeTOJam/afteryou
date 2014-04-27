@@ -30,8 +30,8 @@ class DrawScoreComponent(object):
                 start_x = entity.x + entity.width - radius
             pos = (start_x + (i * radius * 2 * entity.direction), entity.y + radius)
             pygame.draw.circle(surface, player.color, pos, radius)
-            game.get_game().renderer.circle_queue.append(
-                    (player.color,entity.x, entity.y, radius)
+            game.get_game().renderer.appendCircle( 
+                    player.color,entity.x, entity.y, radius
                     )
 
 
