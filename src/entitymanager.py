@@ -33,20 +33,18 @@ class EntityManager(object):
                     self._spatial_maps[tag].add(entity)
     
     def remove_entity(self, entity):     
-        self.remove_list.append(entity)
-        
-    def cleanup(self):
-        for entity in self.remove_list:  
-            if hasattr(entity, 'tags'):
-                for tag in entity.tags:
-                    self._entities_by_tag[tag].remove(entity)
+        if hasattr(entity, 'tags'):
+            for tag in entity.tags:
+                self._entities_by_tag[tag].remove(entity)
+                try:
                     self._spatial_maps[tag].remove(entity)
+                except KeyError:
+                    pass
+        
+        if hasattr(entity, 'name'):
+            del self._entities_by_name[entity.name]
             
-            if hasattr(entity, 'name'):
-                del self._entities_by_name[entity.name]
-                
-            self.entities.remove(entity)
-        self.remove_list = []
+        self.entities.remove(entity)
     
     def update_position(self, entity):
         for tag in entity.tags:
@@ -57,12 +55,12 @@ class EntityManager(object):
         
     def get_by_tag(self, tag):
         try:
-            return self._entities_by_tag[tag]
+            return set(self._entities_by_tag[tag])
         except KeyError:
             return set()
     
     def get_in_area(self, tag, rect, precise=True):
         try:
-            return self._spatial_maps[tag].get(rect, precise)
+            return set(self._spatial_maps[tag].get(rect, precise))
         except KeyError:
-            return set
+            return set()

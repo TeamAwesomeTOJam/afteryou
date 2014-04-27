@@ -23,6 +23,7 @@ from gamecomponents import (SmokeScreenComponent,
 
 from uicomponents import DrawScoreComponent, DrawTimerComponent, UpdateTimerComponent, DrawActionsComponent
 
+from vortexcomponents import DrawVortextComponent, GrowVortextComponent, SpawnVortexComponent
 from entity import Entity
 
 from render import View, BackgroundLayer, SimpleLayer, SolidBackgroundLayer
@@ -70,6 +71,9 @@ class Game(object):
         self.component_manager.register_component(SpeedBoostComponent())
         self.component_manager.register_component(ButtonInterpreterComponent())
         self.component_manager.register_component(DrawActionsComponent())
+        self.component_manager.register_component(SpawnVortexComponent())
+        self.component_manager.register_component(DrawVortextComponent())
+        self.component_manager.register_component(GrowVortextComponent())
         
         self.entity_manager = EntityManager()
             
@@ -119,8 +123,6 @@ class Game(object):
             
             self.mode.update(dt)
             self.mode.draw()
-            
-            self.entity_manager.cleanup()
             
             pygame.display.flip()
             

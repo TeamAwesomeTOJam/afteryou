@@ -1,0 +1,7 @@
+{   
+    "radius" : 0,
+    "max_radius" : 100,
+    "growth_rate" : 20,
+    "tags" : ["update", "draw", "vortex"],
+    "components" : ["GrowVortextComponent", "DrawVortextComponent"]
+}
