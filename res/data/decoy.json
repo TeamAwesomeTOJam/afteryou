@@ -4,7 +4,7 @@
     "color" : [0,0,0],
     "height" : 40,
     "width" : 40,
-    "liveness" : 10,
+    "liveness" : 5,
     
     "tags" : [
         "draw",

@@ -273,10 +273,11 @@ class GLRenderer:
         rad = float(rad) / self.x
         glBegin(GL_TRIANGLE_FAN)
         num_div = 30
-        dx = 2.0/(num_div-1) * math.pi * frac
-        glVertex2f(x,y)
+        dx = -2.0/(num_div-1) * math.pi * frac
+        rot = -1*math.pi/2
+        glVertex2f(x, y)
         for i in xrange(num_div):
-            glVertex2f(x+math.cos(dx * i) * rad, y + math.sin(dx * i) * rad)
+            glVertex2f(x+math.cos(dx * i+rot) * rad, y + math.sin(dx * i+rot) * rad)
         glEnd()
     
     def drawCircle(self,x,y,rad):

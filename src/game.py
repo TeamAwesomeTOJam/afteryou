@@ -21,7 +21,7 @@ from gamecomponents import (SmokeScreenComponent,
                             SpeedBoostComponent,
                             ButtonInterpreterComponent)
 
-from uicomponents import DrawScoreComponent, DrawTimerComponent, UpdateTimerComponent
+from uicomponents import DrawScoreComponent, DrawTimerComponent, UpdateTimerComponent, DrawActionsComponent
 
 from entity import Entity
 
@@ -69,6 +69,7 @@ class Game(object):
         self.component_manager.register_component(UpdateTimerComponent())
         self.component_manager.register_component(SpeedBoostComponent())
         self.component_manager.register_component(ButtonInterpreterComponent())
+        self.component_manager.register_component(DrawActionsComponent())
         
         self.entity_manager = EntityManager()
             
@@ -92,6 +93,8 @@ class Game(object):
         self.entity_manager.add_entity(p2)
         self.entity_manager.add_entity(Entity("scoreui-player1"))
         self.entity_manager.add_entity(Entity("scoreui-player2"))
+        self.entity_manager.add_entity(Entity("actionui-player1"))
+        self.entity_manager.add_entity(Entity("actionui-player2"))
         self.entity_manager.add_entity(Entity("timerui"))
         
         self.renderer.createBackground()
