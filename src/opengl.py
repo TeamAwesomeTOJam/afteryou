@@ -550,9 +550,24 @@ class GLRenderer:
         glClear(GL_COLOR_BUFFER_BIT)
 
 
-    def render_victor(self,state=0):
+    def render_victor(self,state=0,vcolor=None,ncolor = None):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         self.render_to_fbo(self.bg_fbo,lambda: self.render_tex(self.victor_texs[state]))
+
+        shader = self.player_shader
+        glUseProgram(shader)
+        color_location = glGetUniformLocation(shader, "color")
+        self.render_to_fbo(self.fbo, lambda: glClear(GL_COLOR_BUFFER_BIT))
+        if vcolor is not None and state is 0:
+            col = map(lambda x: x/255.0, vcolor)
+            glUniform3f(color_location, col[0],col[1],col[2])
+            self.render_to_fbo(self.fbo, lambda: self.drawCircle(550,300,50))
+        if ncolor is not None and state is 0:
+            col = map(lambda x: x/255.0, ncolor)
+            glUniform3f(color_location, col[0],col[1],col[2])
+            self.render_to_fbo(self.fbo, lambda: self.drawCircle(550,430,50))
+
+        glUseProgram(0)
         self.render_final_fbo()
 
     def render_game_end(self):
