@@ -60,7 +60,10 @@ class PlayMode(object):
             
         timer.time_remaining = timer.time_limit
         self.music.stop()
-
+        
+        game.get_game().renderer.draw_modes = []
+        game.get_game().renderer.player_draw_modes = []
+        
     def handle_event(self, event):
         entity = game.get_game().entity_manager.get_by_name(event.target)
         entity.handle('input', event)
@@ -101,7 +104,7 @@ class BetweenRoundMode(object):
             player1.chasing = True
             player2.chasing = False
             
-            game.get_game().change_mode(AttractMode())
+            game.get_game().change_mode(GameEndMode())
         
         self.ttl -= dt
         if self.ttl < 0:
@@ -109,3 +112,26 @@ class BetweenRoundMode(object):
     
     def draw(self):
         game.get_game().renderer.render_victor()
+        
+
+class GameEndMode(object):
+    
+    def __init__(self):
+        self.ttl = 5
+    
+    def enter(self):
+        pass
+    
+    def leave(self):
+        pass
+    
+    def handle_event(self, event):
+        pass
+    
+    def update(self, dt):
+        self.ttl -= dt
+        if self.ttl < 0:
+            game.get_game().change_mode(AttractMode())
+    
+    def draw(self):
+        game.get_game().renderer.render_game_end()
