@@ -2,9 +2,9 @@
     "speed" : 200,
     "height" : 40,
     "width" : 40,
-    "smoke_screen_cooldown_time" : 10,
+    "smoke_screen_cooldown_time" : 5,
     "smoke_screen_rad" : 200,
-    "decoy_cooldown_time" : 10,
+    "decoy_cooldown_time" : 7,
     
     "minefield_cooldown_time" : 7,
     "minefield_min_rad" : 30,

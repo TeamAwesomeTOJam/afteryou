@@ -1,0 +1,5 @@
+{
+    "spawn_period" : 5,
+    "tags" : ["update", "vortexspawner"],
+    "components" : ["SpawnVortexComponent"]
+}
