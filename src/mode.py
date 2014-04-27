@@ -80,7 +80,7 @@ class PlayMode(object):
 class BetweenRoundMode(object):
     
     def __init__(self):
-        self.ttl = 3
+        self.ttl = 4
     
     def enter(self):
         self.music = game.get_game().resource_manager.get('sound', 'Drums Intro.ogg')
@@ -111,7 +111,14 @@ class BetweenRoundMode(object):
             game.get_game().change_mode(PlayMode())
     
     def draw(self):
-        game.get_game().renderer.render_victor()
+        if self.ttl > 2:
+            game.get_game().renderer.render_victor()
+        elif self.ttl > 1.3:
+            game.get_game().renderer.render_victor()
+        elif self.ttl > 0.7:
+            game.get_game().renderer.render_victor()
+        else:
+            game.get_game().renderer.render_victor()
         
 
 class GameEndMode(object):
