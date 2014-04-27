@@ -208,9 +208,9 @@ class GLRenderer:
 
     def drawRect(self,x,y,w,h):
         x = float(x) / self.x
-        y = float(y) / self.y
+        y = float(y) / self.x
         w = float(w) / self.x
-        h = float(h) / self.y
+        h = float(h) / self.x
         self.drawUVQuad(x,y,w,h)
 
 
