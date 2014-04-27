@@ -150,6 +150,7 @@ class GLRenderer:
         self.movie_screen = pygame.Surface(self.movie.get_size()).convert()
         self.movie.set_display(self.movie_screen)
         self.movie.play()
+        self.mov_tex = glGenTextures(1)
 
     def shrinkRenderShader(self):
         self.counter = 0
@@ -368,7 +369,13 @@ class GLRenderer:
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glEnable(GL_TEXTURE_2D)
+
+        glActiveTexture(GL_TEXTURE2)
+        glBindTexture(GL_TEXTURE_2D,self.mov_tex)
+        loc = glGetUniformLocation(self.final_shader,"p1tex")
+        glUniform1i(loc,2)
+        print loc
+
 
         loc = glGetUniformLocation(self.final_shader,"phase")
         glUniform2f(loc,0,self.counter/500.0)
@@ -504,6 +511,16 @@ class GLRenderer:
 
 
     def render_play(self):
+
+
+        glEnable(GL_TEXTURE_2D)
+
+
+        size = self.movie_screen.get_size()
+        frame = self.movie_screen.get_buffer().raw
+        glBindTexture(GL_TEXTURE_2D,self.mov_tex)
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
+
 #         self.render_to_fbo(self.fbo,self.render_players)
         self.render_to_fbo(self.fbo,self.render_actions)
         self.createBackground()
@@ -528,6 +545,18 @@ class GLRenderer:
 #             self.fbo,self.fbo2 = self.fbo2,self.fbo
 #             self.counter = 0
         self.render_final_fbo()
+        glUseProgram(0)
+
+        glEnable(GL_TEXTURE_2D)
+        #glActiveTexture(GL_TEXTURE2)
+        #glBindTexture(GL_TEXTURE_2D,self.mov_tex)
+        #size = self.movie_screen.get_size()
+        #frame = self.movie_screen.get_buffer().raw
+        #glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
+        #glBindTexture(GL_TEXTURE_2D,self.mov_tex)
+        #loc = glGetUniformLocation(self.final_shader,"p1tex")
+        #glUniform1i(loc,2)
+        #self.render_ss_quad()
         #glColor3f(1,1,1);
         #glBegin(GL_TRIANGLES);
         #glVertex2f(0,0);
@@ -535,7 +564,4 @@ class GLRenderer:
         #glVertex2f(0,1);
         #glEnd();
 
-        size = self.movie_screen.get_size()
-        frame = self.movie_screen.get_buffer().raw
-        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
             
