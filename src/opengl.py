@@ -182,8 +182,15 @@ class GLRenderer:
         filename   = "res/images/end.png"
         self.end_tex = self.load_tex_from_file(filename)
 
+        self.victor_texs = [0 for m in xrange(4)]
         filename   = "res/images/inbetween.png"
-        self.inbetween_tex = self.load_tex_from_file(filename)
+        self.victor_texs[0] = self.load_tex_from_file(filename)
+        filename   = "res/images/1.ready.jpg"
+        self.victor_texs[1] = self.load_tex_from_file(filename)
+        filename   = "res/images/2.set.jpg"
+        self.victor_texs[2] = self.load_tex_from_file(filename)
+        filename   = "res/images/3.go.jpg"
+        self.victor_texs[3] = self.load_tex_from_file(filename)
 
 
 
@@ -269,7 +276,7 @@ class GLRenderer:
                     return color;
                 }
                 void main() {
-                    vec4 bgcol = texture2D(bg,st);
+                    vec4 bgcol = texture2D(bg,vec2(st.s,1-st.t));
                     vec4 fgcol = texture2D(fg,st);
                     if(fgcol.a <= 0) {
                     gl_FragColor = getColor(bgcol);
@@ -543,21 +550,34 @@ class GLRenderer:
         glClear(GL_COLOR_BUFFER_BIT)
 
 
-    def render_victor(self):
-        glUseProgram(0)
+    def render_victor(self,state=0,vcolor=None,ncolor = None):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        self.render_tex(self.inbetween_tex)
+        self.render_to_fbo(self.bg_fbo,lambda: self.render_tex(self.victor_texs[state]))
+
+        shader = self.player_shader
+        glUseProgram(shader)
+        color_location = glGetUniformLocation(shader, "color")
+        self.render_to_fbo(self.fbo, lambda: glClear(GL_COLOR_BUFFER_BIT))
+        if vcolor is not None and state is 0:
+            col = map(lambda x: x/255.0, vcolor)
+            glUniform3f(color_location, col[0],col[1],col[2])
+            self.render_to_fbo(self.fbo, lambda: self.drawCircle(550,300,50))
+        if ncolor is not None and state is 0:
+            col = map(lambda x: x/255.0, ncolor)
+            glUniform3f(color_location, col[0],col[1],col[2])
+            self.render_to_fbo(self.fbo, lambda: self.drawCircle(550,430,50))
+
+        glUseProgram(0)
+        self.render_final_fbo()
 
     def render_game_end(self):
-        glUseProgram(0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        #self.render_tex(self.end_tex)
-        self.render_fbo(self.fbo)
-        pass
+        self.render_to_fbo(self.bg_fbo,lambda: self.render_tex(self.end_tex))
+        self.render_final_fbo()
         
     def render_title(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        self.render_tex(self.inbetween_tex)
+        self.render_tex(self.end_tex)
 
     def render_tex_crap(self):
         glUseProgram(0)
@@ -584,6 +604,9 @@ class GLRenderer:
         #glActiveTexture(GL_TEXTURE2)
         #self.render_tex(self.mov_tex)
 
+    def render_layers(self):
+        pass
+
 
     def render_play(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -592,6 +615,7 @@ class GLRenderer:
 
 #         self.render_to_fbo(self.fbo,self.render_players)
         self.render_to_fbo(self.fbo,self.render_actions)
+        self.render_to_fbo(self.bg_fbo,lambda: glClear(GL_COLOR_BUFFER_BIT))
         self.createBackground()
 
 
@@ -601,9 +625,6 @@ class GLRenderer:
         #self.cleanup()
         #self.render_to_fbo(self.fbo[self.fbo_id],self.render_actions)
 
-        self.render_fbo(self.bg_fbo)
-
-        self.render_fbo(self.fbo)
         def f():
             glColor4f(1,1,1,.01)
             self.render_ss_quad()
