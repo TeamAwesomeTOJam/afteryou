@@ -491,10 +491,10 @@ class GLRenderer:
             self.render_ss_quad()
         #self.render_to_fbo(self.fbo,f)
         self.counter = self.counter + 1
-        if self.counter % 500 == 0:
-            self.render_to_fbo(self.fbo2, self.shrink_players)
-            self.fbo,self.fbo2 = self.fbo2,self.fbo
-            self.counter = 0
+#         if self.counter % 50 == 0:
+#             self.render_to_fbo(self.fbo2, self.shrink_players)
+#             self.fbo,self.fbo2 = self.fbo2,self.fbo
+#             self.counter = 0
         self.render_final_fbo()
         #glColor3f(1,1,1);
         #glBegin(GL_TRIANGLES);
