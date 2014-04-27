@@ -310,7 +310,7 @@ class GLRenderer:
             glVertex2f(x+math.cos(dx * i) * rad, y + math.sin(dx * i) * rad)
         glEnd()
 
-    def drawRing(self,x,y,rad1,rad2):
+    def drawRing(self,x,y,rad,rad2):
         x = float(x) / self.x
         y = float(y) / self.x
         rad = float(rad) / self.x
