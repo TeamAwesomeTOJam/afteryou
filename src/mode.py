@@ -26,7 +26,7 @@ class AttractMode(object):
     
     def handle_event(self, event):
         if event.action not in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
-            game.get_game().change_mode(PlayMode())
+            game.get_game().change_mode(BetweenRoundMode(1.7))
         
     def update(self, dt):
         for entity in game.get_game().entity_manager.get_by_tag('aiplayer'):
@@ -100,8 +100,8 @@ class PlayMode(object):
 
 class BetweenRoundMode(object):
     
-    def __init__(self):
-        self.ttl = 4
+    def __init__(self, ttl = 4):
+        self.ttl = ttl
     
     def enter(self):
         self.music = game.get_game().resource_manager.get('sound', 'Drums Intro.ogg')
