@@ -146,10 +146,11 @@ class GLRenderer:
 
 
     def init_player(self):
-        self.movie = pygame.movie.Movie('/home/mtao/Downloads/g1gabyte.mpg')
-        self.movie_screen = pygame.Surface(self.movie.get_size()).convert()
-        self.movie.set_display(self.movie_screen)
-        self.movie.play()
+        pass
+#         self.movie = pygame.movie.Movie('/home/mtao/Downloads/g1gabyte.mpg')
+#         self.movie_screen = pygame.Surface(self.movie.get_size()).convert()
+#         self.movie.set_display(self.movie_screen)
+#         self.movie.play()
 
     def shrinkRenderShader(self):
         self.counter = 0
@@ -535,7 +536,7 @@ class GLRenderer:
         #glVertex2f(0,1);
         #glEnd();
 
-        size = self.movie_screen.get_size()
-        frame = self.movie_screen.get_buffer().raw
-        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
+#         size = self.movie_screen.get_size()
+#         frame = self.movie_screen.get_buffer().raw
+#         glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
             
