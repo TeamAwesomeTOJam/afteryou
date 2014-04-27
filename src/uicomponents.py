@@ -59,3 +59,26 @@ class UpdateTimerComponent(object):
         if entity.time_remaining < 0:
             game.get_game().change_mode(mode.BetweenRoundMode())
         
+
+class DrawActionsComponent(object):
+    
+    def add(self, entity):
+        verify_attrs(entity, ['target', 'x', 'y', 'width', 'height'])
+        entity.register_handler('draw', self.handle_draw)
+
+    def remove(self, entity):
+        entity.unregister_handler('draw', self.handle_draw)
+        
+    def handle_draw(self, entity, surface, transform):
+        player = game.get_game().entity_manager.get_by_name(entity.target)
+        if player.chasing:
+            ratio = player.speed_boost_activation_cooldown / player.speed_boost_activation_cooldown_time
+            game.get_game().renderer.appendRect((0,0,0), entity.x, entity.y, entity.width * ratio, entity.height/2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/2, entity.width * ratio, entity.height/2)
+            
+            ratio = player.minefield_cooldown / player.minefield_cooldown_time
+            game.get_game().renderer.appendRect((0,0,0), entity.x, entity.y, entity.width * ratio, entity.height/2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/2, entity.width * ratio, entity.height/2)
+        else:
+            pass
+    
