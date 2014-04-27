@@ -18,7 +18,7 @@ class AttractMode(object):
         pass
     
     def draw(self):
-        pass
+        game.get_game().renderer.render_title()
     
 
 class PlayMode(object):
@@ -62,6 +62,7 @@ class PlayMode(object):
             
     def draw(self):
         game.get_game().view.draw()
+        game.get_game().renderer.render_play()
 
 
 class BetweenRoundMode(object):
@@ -87,4 +88,4 @@ class BetweenRoundMode(object):
             game.get_game().change_mode(PlayMode())
     
     def draw(self):
-        pass
+        game.get_game().renderer.render_victor()

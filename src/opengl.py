@@ -106,21 +106,10 @@ class GLRenderer:
         frag_shader = createAndCompileShader('''
                 #version 120
                 uniform vec3 color;
-                uniform sampler2D p1tex;
-                uniform sampler2D p2tex;
-                uniform vec2 phase;
                 varying vec2 st;
                 void main() {
                     gl_FragColor = vec4(0,0,0,1);
-                    if(color.r < color.b) {
-                        gl_FragColor.rb = mod(phase+abs(vec2(cos(10*st.s),sin(10*st.t))),vec2(1,1));
-                        return;
-                        gl_FragColor = texture2D(p1tex,st);
-                    } else {
-                        gl_FragColor.bg = mod(5*st+phase.ts,vec2(1,1));
-                        return;
-                        gl_FragColor = texture2D(p2tex,st);
-                    }
+                    gl_FragColor.rgb = color;
                 }
                 ''',GL_FRAGMENT_SHADER)
         self.player_shader =glCreateProgram()
@@ -214,15 +203,31 @@ class GLRenderer:
                 #version 120
                 uniform sampler2D bg;
                 uniform sampler2D fg;
-                uniform vec3 color;
+                uniform sampler2D p1tex;
+                uniform sampler2D p2tex;
+                uniform vec2 phase;
                 varying vec2 st;
+
+                vec4 getColor(vec4 color) {
+                    vec4 ret = vec4(0,0,0,1);
+                    if(color.rgb == vec3(1,0,0)) {
+                        ret.rb = mod(phase+abs(vec2(cos(10*st.s),sin(10*st.t))),vec2(1,1));
+                        return ret;
+                        return texture2D(p1tex,st);
+                    } else if (color.rgb == vec3(0,1,0)){
+                        ret.bg = mod(5*st+phase.ts,vec2(1,1));
+                        return ret;
+                        return texture2D(p2tex,st);
+                    }
+                    return color;
+                }
                 void main() {
                     vec4 bgcol = texture2D(bg,st);
                     vec4 fgcol = texture2D(fg,st);
                     if(fgcol.a <= 0) {
-                    gl_FragColor = bgcol;
+                    gl_FragColor = getColor(bgcol);
                     } else {
-                    gl_FragColor = vec4(fgcol.rgb,1);
+                    gl_FragColor = getColor(fgcol);
                     }
                 }
                 ''',GL_FRAGMENT_SHADER)
@@ -238,6 +243,7 @@ class GLRenderer:
 
         glUseProgram(self.player_shader)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        return
         num_split = 10
         dx = 1.0 / num_split
         color_location = glGetUniformLocation(self.player_shader, "color")
@@ -342,6 +348,8 @@ class GLRenderer:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glEnable(GL_TEXTURE_2D)
 
+        loc = glGetUniformLocation(self.final_shader,"phase")
+        glUniform2f(loc,0,self.counter/500.0)
         bgloc = glGetUniformLocation(self.final_shader, "bg")
         glActiveTexture(GL_TEXTURE0)
         glBindTexture(GL_TEXTURE_2D, self.bg_fbo.gl_tex_id)
@@ -456,14 +464,15 @@ class GLRenderer:
         glClear(GL_COLOR_BUFFER_BIT)
 
 
+    def render_victor(self):
+        pass
+
+    def render_title(self):
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
 
-    def render(self):
+    def render_play(self):
 #         self.render_to_fbo(self.fbo,self.render_players)
-        glUseProgram(self.player_shader)
-        loc = glGetUniformLocation(self.player_shader,"phase")
-        glUniform2f(loc,0,self.counter/500.0)
-        glUseProgram(0)
         self.render_to_fbo(self.fbo,self.render_actions)
         self.createBackground()
 

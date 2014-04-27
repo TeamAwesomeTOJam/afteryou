@@ -119,7 +119,6 @@ class Game(object):
             
             self.mode.update(dt)
             self.mode.draw()
-            self.renderer.render()
             
             self.entity_manager.cleanup()
             
