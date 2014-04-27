@@ -150,7 +150,8 @@ class PlayerCollisionComponent(object):
     
     def handle_collision(self, entity, other):
         if 'player' in other.tags and entity.chasing:
-            game.get_game().change_mode(mode.BetweenRoundMode())
+            if get_midpoint(entity).get_distance(get_midpoint(other)) < entity.width/2 + other.width/2:
+                game.get_game().change_mode(mode.BetweenRoundMode())
                     
         
 def verify_attrs(entity, attrs):
@@ -189,5 +190,4 @@ def get_box_in_front(entity, width, height):
     return collision_box
 
 def get_midpoint(entity):
-    return Vec2d(entity.x , entity.y )
     return Vec2d(entity.x + (entity.width/2), entity.y + (entity.height/2))

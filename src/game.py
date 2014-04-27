@@ -32,7 +32,6 @@ from opengl import GLRenderer
 
 _game = None
 
-USE_RENDERER = False
 USE_RENDERER = True
 
 

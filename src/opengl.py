@@ -254,25 +254,25 @@ class GLRenderer:
 
         glDisable(GL_TEXTURE_2D)    
 
-    def render_players(self):
-        glClearColor(0,0,0,0)
-        #glClear(GL_COLOR_BUFFER_BIT)
-        glUseProgram(self.player_shader)
-        #for view in self.views:
-        #    view.draw()
-        glColor3f(1,1,1);
-
-        em = game.get_game().entity_manager
-
-
-        color_location = glGetUniformLocation(self.player_shader, "color")
-        for ent in em.get_by_tag('draw_as_player'):
-            
-            col = map(lambda x: x/255.0, ent.color)
-
-            glUniform3f(color_location, col[0],col[1],col[2])
-            self.drawCircle(ent.x,ent.y,ent.height/2.0)
-        glUseProgram(0)
+#     def render_players(self):
+#         glClearColor(0,0,0,0)
+#         #glClear(GL_COLOR_BUFFER_BIT)
+#         glUseProgram(self.player_shader)
+#         #for view in self.views:
+#         #    view.draw()
+#         glColor3f(1,1,1);
+# 
+#         em = game.get_game().entity_manager
+# 
+# 
+#         color_location = glGetUniformLocation(self.player_shader, "color")
+#         for ent in em.get_by_tag('draw_as_player'):
+#             
+#             col = map(lambda x: x/255.0, ent.color)
+# 
+#             glUniform3f(color_location, col[0],col[1],col[2])
+#             self.drawCircle(ent.x,ent.y,ent.height/2.0)
+#         glUseProgram(0)
 
     def render_to_fbo(self,fbo, func):
         fbo.bind()
@@ -327,7 +327,7 @@ class GLRenderer:
 
 
     def render(self):
-        self.render_to_fbo(self.fbo,self.render_players)
+#         self.render_to_fbo(self.fbo,self.render_players)
         self.render_to_fbo(self.fbo,self.render_actions)
         #self.render_fbo(self.bg_fbo)
         #self.render_fbo(self.fbo)
