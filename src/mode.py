@@ -112,13 +112,13 @@ class BetweenRoundMode(object):
     
     def draw(self):
         if self.ttl > 2:
-            game.get_game().renderer.render_victor()
+            game.get_game().renderer.render_victor(0)
         elif self.ttl > 1.3:
-            game.get_game().renderer.render_victor()
+            game.get_game().renderer.render_victor(1)
         elif self.ttl > 0.7:
-            game.get_game().renderer.render_victor()
+            game.get_game().renderer.render_victor(2)
         else:
-            game.get_game().renderer.render_victor()
+            game.get_game().renderer.render_victor(3)
         
 
 class GameEndMode(object):
