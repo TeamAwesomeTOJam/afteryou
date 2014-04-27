@@ -53,7 +53,7 @@ class FrameBufferObject:
         glEnable(GL_POLYGON_SMOOTH)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
-        glEnable(GL_ALPHA_TEST)
+        #glEnable(GL_ALPHA_TEST)
         glDisable(GL_DEPTH_TEST)
         self.clear()
     
@@ -108,11 +108,17 @@ class GLRenderer:
                 uniform vec3 color;
                 uniform sampler2D p1tex;
                 uniform sampler2D p2tex;
+                uniform vec2 phase;
                 varying vec2 st;
                 void main() {
+                    gl_FragColor = vec4(0,0,0,1);
                     if(color.r < color.b) {
+                        gl_FragColor.rb = mod(phase+abs(vec2(cos(10*st.s),sin(10*st.t))),vec2(1,1));
+                        return;
                         gl_FragColor = texture2D(p1tex,st);
                     } else {
+                        gl_FragColor.bg = mod(5*st+phase.ts,vec2(1,1));
+                        return;
                         gl_FragColor = texture2D(p2tex,st);
                     }
                 }
@@ -133,17 +139,66 @@ class GLRenderer:
                     [ 1, 1, 0],
                     [ 0, 1, 0],
                     ]))
-        fbox = 1280
-        fboy = 720
-        self.fbo = FrameBufferObject(fbox,fboy)
-        self.fbo_id = 0
-        self.bg_fbo = FrameBufferObject(fbox,fboy)
-        self.final_fbo = FrameBufferObject(fbox,fboy)
+        self.fbox = 1280
+        self.fboy = 720
+        self.fbo = FrameBufferObject(self.fbox,self.fboy)
+        self.fbo2 = FrameBufferObject(self.fbox,self.fboy)
+        self.bg_fbo = FrameBufferObject(self.fbox,self.fboy)
+        self.final_fbo = FrameBufferObject(self.fbox,self.fboy)
         self.finalRenderShader();
-        self.resize((fbox,fboy))
+        self.shrinkRenderShader();
+        self.resize((self.fbox,self.fboy))
         self.cleanup()
         glClearStencil(0);
 
+    def shrinkRenderShader(self):
+        self.counter = 0
+        vert_shader = createAndCompileShader('''
+
+                #version 120
+                varying vec2 st;
+                void main() {
+                gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                    st = gl_MultiTexCoord0.st;
+                    st.t = 1-st.t;
+                }
+                ''',GL_VERTEX_SHADER)
+        frag_shader = createAndCompileShader('''
+                #version 120
+                uniform sampler2D tex;
+                varying vec2 st;
+                uniform vec2 dx;
+                bool boundary(int i, int j) {
+                    vec2 c = st + dx*vec2(i,j);
+                    float v = texture2D(tex,c).a;
+                    return v <= 0;
+                }
+                void main() {
+                    vec4 fgcol = texture2D(tex,st);
+                    if (
+                        boundary(-1,-1) || boundary(-1,1)
+                        || boundary(1,1) || boundary(1,-1) 
+                        || boundary(0,1) || boundary(0,-1) 
+                        || boundary(1,0) || boundary(-1,0) 
+                        ) {
+                        gl_FragColor = fgcol - vec4(0,0,0,.001);
+                        gl_FragColor.rgb = vec3(1.0);
+                        gl_FragColor.a = 0.001;
+                    } else {
+                        gl_FragColor = fgcol;
+                    }
+                }
+                ''',GL_FRAGMENT_SHADER)
+        self.shrink_shader =glCreateProgram()
+        glAttachShader(self.shrink_shader,vert_shader)
+        glAttachShader(self.shrink_shader,frag_shader)
+        glLinkProgram(self.shrink_shader)
+        dx = 1.0/self.fbox
+        dy = 1.0/self.fboy
+        glUseProgram(self.shrink_shader)
+        loc = glGetUniformLocation(self.shrink_shader,"dx")
+        glUniform2f(loc,dx,dy)
+        glUseProgram(0)
     
     def finalRenderShader(self):
         vert_shader = createAndCompileShader('''
@@ -164,10 +219,10 @@ class GLRenderer:
                 void main() {
                     vec4 bgcol = texture2D(bg,st);
                     vec4 fgcol = texture2D(fg,st);
-                    if(fgcol.a == 0) {
+                    if(fgcol.a <= 0) {
                     gl_FragColor = bgcol;
                     } else {
-                    gl_FragColor = fgcol;
+                    gl_FragColor = vec4(fgcol.rgb,1);
                     }
                 }
                 ''',GL_FRAGMENT_SHADER)
@@ -181,11 +236,11 @@ class GLRenderer:
         
     def drawBackground(self):
 
-        glUseProgram(self.generic_shader)
+        glUseProgram(self.player_shader)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         num_split = 10
         dx = 1.0 / num_split
-        color_location = glGetUniformLocation(self.generic_shader, "color")
+        color_location = glGetUniformLocation(self.player_shader, "color")
         for i in xrange(num_split):
             color = game.get_game().entity_manager.get_by_name('player' + str(2-(i%2))).color
             col = map(lambda x: x/255.0, color)
@@ -219,6 +274,7 @@ class GLRenderer:
         glBegin(GL_TRIANGLE_FAN)
         num_div = 30
         dx = 2.0/(num_div-1) * math.pi * frac
+        glVertex2f(x,y)
         for i in xrange(num_div):
             glVertex2f(x+math.cos(dx * i) * rad, y + math.sin(dx * i) * rad)
         glEnd()
@@ -230,6 +286,7 @@ class GLRenderer:
         glBegin(GL_TRIANGLE_FAN)
         num_div = 30
         dx = 2.0/(num_div-1) * math.pi
+        glVertex2f(x,y)
         for i in xrange(num_div):
             glVertex2f(x+math.cos(dx * i) * rad, y + math.sin(dx * i) * rad)
         glEnd()
@@ -262,8 +319,22 @@ class GLRenderer:
 
         glEnd()
 
+    def shrink_players(self):
+
+        glUseProgram(self.shrink_shader)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glEnable(GL_TEXTURE_2D)
+
+
+        fgloc = glGetUniformLocation(self.shrink_shader, "tex")
+        glActiveTexture(GL_TEXTURE0)
+        glBindTexture(GL_TEXTURE_2D, self.fbo.gl_tex_id)
+        glUniform1i(fgloc,1)
+        self.render_ss_quad()
+
+        glDisable(GL_TEXTURE_2D)    
+
     def render_final_fbo(self):
-        glViewport(0, 0, self.x,self.y)
         glUseProgram(self.final_shader)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
@@ -388,7 +459,14 @@ class GLRenderer:
 
     def render(self):
 #         self.render_to_fbo(self.fbo,self.render_players)
+        glUseProgram(self.player_shader)
+        loc = glGetUniformLocation(self.player_shader,"phase")
+        glUniform2f(loc,0,self.counter/500.0)
+        glUseProgram(0)
         self.render_to_fbo(self.fbo,self.render_actions)
+        self.createBackground()
+
+
 
 #        self.render_to_fbo(self.fbo[self.fbo_id],)
         #self.fbo_id = 1 - self.fbo_id
@@ -401,7 +479,12 @@ class GLRenderer:
         def f():
             glColor4f(1,1,1,.01)
             self.render_ss_quad()
-        self.render_to_fbo(self.fbo,f)
+        #self.render_to_fbo(self.fbo,f)
+        self.counter = self.counter + 1
+        if self.counter % 500 == 0:
+            self.render_to_fbo(self.fbo2, self.shrink_players)
+            self.fbo,self.fbo2 = self.fbo2,self.fbo
+            self.counter = 0
         self.render_final_fbo()
         #glColor3f(1,1,1);
         #glBegin(GL_TRIANGLES);
