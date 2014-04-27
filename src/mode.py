@@ -37,8 +37,12 @@ class PlayMode(object):
                 
         if (player1.chasing and timer.time_remaining < 0) or (player2.chasing and timer.time_remaining >= 0):
             winner = player2
+            player2.winner = True
+            player1.winner = False
         else:
             winner = player1
+            player1.winner = True
+            player2.winner = False
             
         winner.score += 1
     
@@ -112,7 +116,12 @@ class BetweenRoundMode(object):
     
     def draw(self):
         if self.ttl > 2:
-            game.get_game().renderer.render_victor()
+            player1 = game.get_game().entity_manager.get_by_name('player1')
+            player2 = game.get_game().entity_manager.get_by_name('player2')
+            if player1.winner:
+                game.get_game().renderer.render_victor()
+            else:
+                game.get_game().renderer.render_victor()
         elif self.ttl > 1.3:
             game.get_game().renderer.render_victor()
         elif self.ttl > 0.7:
@@ -141,4 +150,9 @@ class GameEndMode(object):
             game.get_game().change_mode(AttractMode())
     
     def draw(self):
-        game.get_game().renderer.render_game_end()
+        player1 = game.get_game().entity_manager.get_by_name('player1')
+        player2 = game.get_game().entity_manager.get_by_name('player2')
+        if player1.score > player2.score:
+            game.get_game().renderer.render_game_end()
+        else:
+            game.get_game().renderer.render_game_end()  
