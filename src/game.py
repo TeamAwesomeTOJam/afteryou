@@ -20,7 +20,8 @@ from gamecomponents import (SmokeScreenComponent,
                             MinefieldComponent,
                             SpeedBoostComponent,
                             ButtonInterpreterComponent,
-                            TrapComponent)
+                            TrapComponent,
+                            HideComponent)
 
 from uicomponents import DrawScoreComponent, DrawTimerComponent, UpdateTimerComponent, DrawActionsComponent
 
@@ -76,6 +77,7 @@ class Game(object):
         self.component_manager.register_component(DrawVortextComponent())
         self.component_manager.register_component(GrowVortextComponent())
         self.component_manager.register_component(TrapComponent())
+        self.component_manager.register_component(HideComponent())
         
         self.entity_manager = EntityManager()
             
