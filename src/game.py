@@ -108,6 +108,8 @@ class Game(object):
         self.change_mode(mode)
         self.running = True
 
+        self.entity_manager.commit_changes()
+        
         while self.running:
             dt = self.clock.tick(60) / 1000.0
             
@@ -126,6 +128,7 @@ class Game(object):
             self.mode.update(dt)
             self.mode.draw()
             
+            self.entity_manager.commit_changes()
             pygame.display.flip()
             
     def change_mode(self, new_mode):

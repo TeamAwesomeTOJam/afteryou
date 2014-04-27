@@ -52,4 +52,4 @@ class DrawVortextComponent(object):
         
     def handle_draw(self, entity):
         if entity.radius != entity.previous_radius:
-            game.get_game().renderer.appendRing(entity.color, int(entity.x), int(entity.y), entity.max_radius, entity.max_radius + 10)
+            game.get_game().renderer.appendRing(entity.color, entity.x, entity.y, entity.previous_radius, entity.radius)
