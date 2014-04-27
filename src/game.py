@@ -90,8 +90,8 @@ class Game(object):
             self.renderer.resize(self.screen_size)
        
 
-        self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [BackgroundLayer()])
-        self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SimpleLayer('draw'), SimpleLayer('ui')])
+#         self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [BackgroundLayer()])
+        self.view = View([SimpleLayer('draw'), SimpleLayer('ui')])
         
     def run(self, mode):
         p1 = Entity("player1")
@@ -103,7 +103,7 @@ class Game(object):
         self.entity_manager.add_entity(Entity("timerui"))
         
         if USE_RENDERER:
-            self.renderer.render_to_fbo(self.renderer.bg_fbo, self.renderer.drawBackground)
+            self.renderer.createBackground()
         else:
             self.background_view.draw()
 
@@ -126,10 +126,10 @@ class Game(object):
                     self.mode.handle_event(event)
             
             self.mode.update(dt)
+            self.mode.draw()
             if USE_RENDERER:
                 self.renderer.render()
-            else:
-                self.mode.draw()
+                
             
             self.entity_manager.cleanup()
             
