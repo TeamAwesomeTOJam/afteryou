@@ -78,8 +78,11 @@ class GLRenderer:
         vert_shader = createAndCompileShader('''
 
                 #version 120
+                uniform float aspectRatio;
                 void main() {
-                gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                    vec4 v = gl_Vertex;
+                    v.y = v.y * aspectRatio;
+                gl_Position = gl_ModelViewProjectionMatrix * v;
                 }
                 ''',GL_VERTEX_SHADER)
         frag_shader = createAndCompileShader('''
@@ -104,22 +107,21 @@ class GLRenderer:
                     [ 1, 1, 0],
                     [ 0, 1, 0],
                     ]))
-        fbox = 720
+        fbox = 1280
         fboy = 720
         self.fbo = FrameBufferObject(fbox,fboy)
         self.bg_fbo = FrameBufferObject(fbox,fboy)
         self.finalRenderShader();
-#        self.resize()
+        self.resize((fbox,fboy))
+
     
     def finalRenderShader(self):
         vert_shader = createAndCompileShader('''
 
                 #version 120
                 varying vec2 st;
-                uniform float aspectRatio;
                 void main() {
                 gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-                //gl_Position.y = gl_Position.y * aspectRatio;
                     st = gl_MultiTexCoord0.st;
                 }
                 ''',GL_VERTEX_SHADER)
@@ -144,6 +146,8 @@ class GLRenderer:
         glAttachShader(self.final_shader,frag_shader)
         glLinkProgram(self.final_shader)
         
+    def createBackground(self):
+        self.render_to_fbo(self.bg_fbo, self.drawBackground)
         
     def drawBackground(self):
 
@@ -171,7 +175,8 @@ class GLRenderer:
         glViewport(0,0,x,y)
         glUseProgram(self.player_shader)
         loc = glGetUniformLocation(self.player_shader,"aspectRatio")
-        glUniform1f(loc,float(y)/x)
+        ratio = float(x)/y
+        glUniform1f(loc,ratio)
         glUseProgram(0)
 
         #gluOrtho2D(-1,1,-1,1)
@@ -207,12 +212,11 @@ class GLRenderer:
 
     def render_ss_quad(self):
         glBegin(GL_QUADS)
-        ratio = (1 - self.y/float(self.x))/2.0
 
-        glTexCoord2f(0, 1); glVertex2f( ratio, 0 )
-        glTexCoord2f(1, 1); glVertex2f( 1-ratio, 0 )
-        glTexCoord2f(1, 0); glVertex2f( 1-ratio, 1)
-        glTexCoord2f(0, 0); glVertex2f( ratio, 1)
+        glTexCoord2f(0, 1); glVertex2f( 0, 0 )
+        glTexCoord2f(1, 1); glVertex2f( 1, 0 )
+        glTexCoord2f(1, 0); glVertex2f( 1, 1)
+        glTexCoord2f(0, 0); glVertex2f( 0, 1)
 
         glEnd()
 

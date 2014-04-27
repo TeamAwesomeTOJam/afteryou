@@ -104,7 +104,7 @@ class Game(object):
         self.entity_manager.add_entity(Entity("timerui"))
         
         if USE_RENDERER:
-            self.renderer.render_to_fbo(self.renderer.bg_fbo, self.renderer.drawBackground)
+            self.renderer.createBackground()
         else:
             self.background_view.draw()
 
