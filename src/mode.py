@@ -83,6 +83,17 @@ class BetweenRoundMode(object):
         pass
     
     def update(self, dt):
+        player1 = game.get_game().entity_manager.get_by_name('player1')
+        player2 = game.get_game().entity_manager.get_by_name('player2')
+        
+        if player1.score == 3 or player2.score == 3:
+            player1.score = 0
+            player2.score = 0
+            player1.chasing = True
+            player2.chasing = False
+            
+            game.get_game().change_mode(AttractMode())
+        
         self.ttl -= dt
         if self.ttl < 0:
             game.get_game().change_mode(PlayMode())
