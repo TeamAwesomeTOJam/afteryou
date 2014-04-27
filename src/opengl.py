@@ -168,7 +168,7 @@ class GLRenderer:
         dx = 1.0 / num_split
         color_location = glGetUniformLocation(self.player_shader, "color")
         for i in xrange(num_split):
-            color = game.get_game().entity_manager.get_by_name('player' + str(1+(i%2))).color
+            color = game.get_game().entity_manager.get_by_name('player' + str(2-(i%2))).color
             col = map(lambda x: x/255.0, color)
 
             glUniform3f(color_location, col[0],col[1],col[2])
