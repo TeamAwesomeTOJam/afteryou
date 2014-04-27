@@ -8,6 +8,7 @@ from OpenGL.GLUT import *
 from OpenGL.arrays import vbo
 from OpenGL.GL import *
 from OpenGL.GL.framebufferobjects import *
+DO_TEXTURES = False
 
 def createAndCompileShader(source,type):
     shader=glCreateShader(type)
@@ -146,8 +147,8 @@ class GLRenderer:
 
 
     def init_player(self):
-        return
-        self.movie = pygame.movie.Movie('/home/mtao/Downloads/g1gabyte.mpg')
+        if not DO_TEXTURES: return
+        self.movie = pygame.movie.Movie('/home/mtao/vid/gucci.mpg')
         self.movie_screen = pygame.Surface(self.movie.get_size()).convert()
         self.movie.set_display(self.movie_screen)
         self.movie.play()
@@ -226,7 +227,7 @@ class GLRenderer:
                     if(color.rgb == vec3(1,0,0)) {
                         ret.rb = mod(phase+abs(vec2(cos(10*st.s),sin(10*st.t))),vec2(1,1));
                         return ret;
-                        return texture2D(p1tex,st);
+                        return texture2D(p1tex,vec2(st.s,1-st.t));
                     } else if (color.rgb == vec3(0,1,0)){
                         ret.bg = mod(5*st+phase.ts,vec2(1,1));
                         return ret;
@@ -372,10 +373,11 @@ class GLRenderer:
         glLoadIdentity()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        #glActiveTexture(GL_TEXTURE2)
-        #glBindTexture(GL_TEXTURE_2D,self.mov_tex)
-        #loc = glGetUniformLocation(self.final_shader,"p1tex")
-        #glUniform1i(loc,2)
+        if DO_TEXTURES:
+            glActiveTexture(GL_TEXTURE2)
+            glBindTexture(GL_TEXTURE_2D,self.mov_tex)
+            loc = glGetUniformLocation(self.final_shader,"p1tex")
+            glUniform1i(loc,2)
 
 
         loc = glGetUniformLocation(self.final_shader,"phase")
@@ -394,18 +396,20 @@ class GLRenderer:
         glDisable(GL_TEXTURE_2D)    
 
 
-
-    def render_fbo(self,fbo, layer=0):
+    def render_tex(self,tex, layer=0):
         glViewport(0, 0, self.x,self.y)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glColor3f(1, 1, 1)
         glEnable(GL_TEXTURE_2D)
-        glBindTexture(GL_TEXTURE_2D, fbo.gl_tex_id)
+        glBindTexture(GL_TEXTURE_2D, tex)
         self.render_ss_quad(layer)
 
         glDisable(GL_TEXTURE_2D)    
+
+    def render_fbo(self,fbo, layer=0):
+        self.render_tex(fbo.gl_tex_id)
 
 #     def render_players(self):
 #         glClearColor(0,0,0,0)
@@ -510,17 +514,34 @@ class GLRenderer:
     def render_title(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
+    def render_tex_crap(self):
+        glUseProgram(0)
+
+
+        glDisable(GL_TEXTURE_2D)
+
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        w,h = self.movie_screen.get_size()
+        frame = self.movie_screen
+        image_data = pygame.image.tostring(frame, "RGBA", 1)
+        glBindTexture(GL_TEXTURE_2D,self.mov_tex)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE)
+        glTexImage2D(
+                GL_TEXTURE_2D, 0,
+                GL_RGBA,
+                w, h, 0,
+                GL_RGBA, GL_UNSIGNED_BYTE,
+                image_data)
+        #glActiveTexture(GL_TEXTURE2)
+        #self.render_tex(self.mov_tex)
+
 
     def render_play(self):
-
-
-        glEnable(GL_TEXTURE_2D)
-
-
-        #size = self.movie_screen.get_size()
-        #frame = self.movie_screen.get_buffer().raw
-        #glBindTexture(GL_TEXTURE_2D,self.mov_tex)
-        #glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
+        if DO_TEXTURES: self.render_tex_crap()
 
 #         self.render_to_fbo(self.fbo,self.render_players)
         self.render_to_fbo(self.fbo,self.render_actions)
@@ -548,16 +569,6 @@ class GLRenderer:
         self.render_final_fbo()
         glUseProgram(0)
 
-        glEnable(GL_TEXTURE_2D)
-        #glActiveTexture(GL_TEXTURE2)
-        #glBindTexture(GL_TEXTURE_2D,self.mov_tex)
-        #size = self.movie_screen.get_size()
-        #frame = self.movie_screen.get_buffer().raw
-        #glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
-        #glBindTexture(GL_TEXTURE_2D,self.mov_tex)
-        #loc = glGetUniformLocation(self.final_shader,"p1tex")
-        #glUniform1i(loc,2)
-        #self.render_ss_quad()
         #glColor3f(1,1,1);
         #glBegin(GL_TRIANGLES);
         #glVertex2f(0,0);
