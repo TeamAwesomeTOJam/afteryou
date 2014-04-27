@@ -1,0 +1,9 @@
+{
+    "name" : "player2",
+    "chasing" : false,
+    "x" : 50, "y" : 360,
+    "color" : [255,0,0],
+    
+    "includes" : ["aiplayer"]
+    
+}
