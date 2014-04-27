@@ -19,4 +19,4 @@ class DrawCircleComponent(object):
 #         r = pygame.Rect(int(screen_x), int(screen_y), entity.height, entity.width)
 #         pygame.draw.ellipse(surface, entity.color, r)
         p = get_midpoint(entity)
-        game.get_game().renderer.appendCircle( entity.color,p.x,p.y, entity.height/2) 
+        game.get_game().renderer.appendPlayerCircle( entity.color,p.x,p.y, entity.height/2) 

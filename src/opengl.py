@@ -54,6 +54,7 @@ class FrameBufferObject:
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
         glEnable(GL_ALPHA_TEST)
+        glDisable(GL_DEPTH_TEST)
         self.clear()
     
     def bind(self):
@@ -77,20 +78,18 @@ class GLRenderer:
     def __init__(self):
         glutInit()
         glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL);
-        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-        glDepthMask(GL_FALSE);
-        glStencilFunc(GL_NOTEQUAL,0,0xFF)
-        self.circle_queue = []
-        self.rectangle_queue = []
         self.draw_queue = []
+        self.player_draw_queue = []
         vert_shader = createAndCompileShader('''
 
                 #version 120
                 uniform float aspectRatio;
+                varying vec2 st;
                 void main() {
                     vec4 v = gl_Vertex;
                     v.y = v.y * aspectRatio;
                 gl_Position = gl_ModelViewProjectionMatrix * v;
+                st = v.st;
                 }
                 ''',GL_VERTEX_SHADER)
         frag_shader = createAndCompileShader('''
@@ -98,6 +97,24 @@ class GLRenderer:
                 uniform vec3 color;
                 void main() {
                     gl_FragColor = vec4(color,1.0);
+                }
+                ''',GL_FRAGMENT_SHADER)
+        self.generic_shader =glCreateProgram()
+        glAttachShader(self.generic_shader,vert_shader)
+        glAttachShader(self.generic_shader,frag_shader)
+        glLinkProgram(self.generic_shader)
+        frag_shader = createAndCompileShader('''
+                #version 120
+                uniform vec3 color;
+                uniform sampler2D p1tex;
+                uniform sampler2D p2tex;
+                varying vec2 st;
+                void main() {
+                    if(color.r < color.b) {
+                        gl_FragColor = texture2D(p1tex,st);
+                    } else {
+                        gl_FragColor = texture2D(p2tex,st);
+                    }
                 }
                 ''',GL_FRAGMENT_SHADER)
         self.player_shader =glCreateProgram()
@@ -121,9 +138,11 @@ class GLRenderer:
         self.fbo = FrameBufferObject(fbox,fboy)
         self.fbo_id = 0
         self.bg_fbo = FrameBufferObject(fbox,fboy)
+        self.final_fbo = FrameBufferObject(fbox,fboy)
         self.finalRenderShader();
         self.resize((fbox,fboy))
         self.cleanup()
+        glClearStencil(0);
 
     
     def finalRenderShader(self):
@@ -145,7 +164,7 @@ class GLRenderer:
                 void main() {
                     vec4 bgcol = texture2D(bg,st);
                     vec4 fgcol = texture2D(fg,st);
-                    if(length(fgcol.xyz) == 0) {
+                    if(fgcol.a == 0) {
                     gl_FragColor = bgcol;
                     } else {
                     gl_FragColor = fgcol;
@@ -162,11 +181,11 @@ class GLRenderer:
         
     def drawBackground(self):
 
-        glUseProgram(self.player_shader)
+        glUseProgram(self.generic_shader)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         num_split = 10
         dx = 1.0 / num_split
-        color_location = glGetUniformLocation(self.player_shader, "color")
+        color_location = glGetUniformLocation(self.generic_shader, "color")
         for i in xrange(num_split):
             color = game.get_game().entity_manager.get_by_name('player' + str(2-(i%2))).color
             col = map(lambda x: x/255.0, color)
@@ -183,9 +202,13 @@ class GLRenderer:
         self.x = x
         self.y = y
         glViewport(0,0,x,y)
+        ratio = float(x)/y
+        glUseProgram(self.generic_shader)
+        loc = glGetUniformLocation(self.generic_shader,"aspectRatio")
+        glUniform1f(loc,ratio)
+        glUseProgram(0)
         glUseProgram(self.player_shader)
         loc = glGetUniformLocation(self.player_shader,"aspectRatio")
-        ratio = float(x)/y
         glUniform1f(loc,ratio)
         glUseProgram(0)
 
@@ -277,7 +300,7 @@ class GLRenderer:
 #     def render_players(self):
 #         glClearColor(0,0,0,0)
 #         #glClear(GL_COLOR_BUFFER_BIT)
-#         glUseProgram(self.player_shader)
+#         glUseProgram(self.generic_shader)
 #         #for view in self.views:
 #         #    view.draw()
 #         glColor3f(1,1,1);
@@ -285,7 +308,7 @@ class GLRenderer:
 #         em = game.get_game().entity_manager
 # 
 # 
-#         color_location = glGetUniformLocation(self.player_shader, "color")
+#         color_location = glGetUniformLocation(self.generic_shader, "color")
 #         for ent in em.get_by_tag('draw_as_player'):
 #             
 #             col = map(lambda x: x/255.0, ent.color)
@@ -300,38 +323,39 @@ class GLRenderer:
         fbo.unbind()
 
     def render_actions(self):
-        glUseProgram(self.player_shader)
-        #for view in self.views:
-        #    view.draw()
-        glColor3f(1,1,1);
 
 
-        color_location = glGetUniformLocation(self.player_shader, "color")
+        def doQueue(queue, shader):
+            glUseProgram(shader)
             
-        for item in self.draw_queue:
-            (a,v) = item
-            if a==0:
-                color,cx,cy,r = v
-                col = map(lambda x: x/255.0, color)
+            color_location = glGetUniformLocation(shader, "color")
+            for item in queue:
+                (a,v) = item
+                if a==0:
+                    color,cx,cy,r = v
+                    col = map(lambda x: x/255.0, color)
 
-                glUniform3f(color_location, col[0],col[1],col[2])
-                self.drawCircle(cx,cy,r)
-            elif a==2:
-                color,cx,cy,r,f = v
-                col = map(lambda x: x/255.0, color)
+                    glUniform3f(color_location, col[0],col[1],col[2])
+                    self.drawCircle(cx,cy,r)
+                elif a==2:
+                    color,cx,cy,r,f = v
+                    col = map(lambda x: x/255.0, color)
 
-                glUniform3f(color_location, col[0],col[1],col[2])
-                self.drawFan(cx,cy,r,f)
-            elif a==1:
-                color,x,y,w,h = v
-                col = map(lambda x: x/255.0, color)
+                    glUniform3f(color_location, col[0],col[1],col[2])
+                    self.drawFan(cx,cy,r,f)
+                elif a==1:
+                    color,x,y,w,h = v
+                    col = map(lambda x: x/255.0, color)
 
-                glUniform3f(color_location, col[0],col[1],col[2])
-                self.drawRect(x,y,w,h)
+                    glUniform3f(color_location, col[0],col[1],col[2])
+                    self.drawRect(x,y,w,h)
+            glUseProgram(0)
+        doQueue(self.player_draw_queue,self.player_shader)
+        doQueue(self.draw_queue,self.generic_shader)
 
-        glUseProgram(0)
         
         self.draw_queue = []
+        self.player_draw_queue = []
 
     def appendCircle(self,color, px, py, rad):
         self.draw_queue.append( (0,(color,px,py,rad) ) )
@@ -343,6 +367,14 @@ class GLRenderer:
         self.draw_queue.append( (2,(color,px,py,rad,frac) ) )
 
 
+    def appendPlayerCircle(self,color, px, py, rad):
+        self.player_draw_queue.append( (0,(color,px,py,rad) ) )
+
+    def appendPlayerRect(self,color, px, py, w,h):
+        self.player_draw_queue.append( (1,(color,px,py,w,h)) )
+
+    def appendPlayerFan(self,color, px, py, rad, frac):
+        self.player_draw_queue.append( (2,(color,px,py,rad,frac) ) )
 
     def cleanup(self):
         self.render_to_fbo(self.fbo,self.clean)
@@ -358,13 +390,18 @@ class GLRenderer:
 #         self.render_to_fbo(self.fbo,self.render_players)
         self.render_to_fbo(self.fbo,self.render_actions)
 
-        glEnable(GL_STENCIL_TEST)
 #        self.render_to_fbo(self.fbo[self.fbo_id],)
         #self.fbo_id = 1 - self.fbo_id
         #self.cleanup()
-        #self.render_fbo(self.bg_fbo)
         #self.render_to_fbo(self.fbo[self.fbo_id],self.render_actions)
+
+        self.render_fbo(self.bg_fbo)
+
         self.render_fbo(self.fbo)
+        def f():
+            glColor4f(1,1,1,.01)
+            self.render_ss_quad()
+        self.render_to_fbo(self.fbo,f)
         self.render_final_fbo()
         #glColor3f(1,1,1);
         #glBegin(GL_TRIANGLES);
