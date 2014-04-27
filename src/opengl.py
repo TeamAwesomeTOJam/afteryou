@@ -76,7 +76,10 @@ class FrameBufferObject:
 class GLRenderer:
     def __init__(self):
         glutInit()
-        glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA);
+        glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL);
+        #glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        #glDepthMask(GL_FALSE);
+        #glStencilFunc(GL_NOTEQUAL,0,0xFF)
         self.circle_queue = []
         self.rectangle_queue = []
         self.draw_queue = []
@@ -116,6 +119,7 @@ class GLRenderer:
         fbox = 1280
         fboy = 720
         self.fbo = FrameBufferObject(fbox,fboy)
+        self.fbo_id = 0
         self.bg_fbo = FrameBufferObject(fbox,fboy)
         self.finalRenderShader();
         self.resize((fbox,fboy))
@@ -185,6 +189,16 @@ class GLRenderer:
         glUniform1f(loc,ratio)
         glUseProgram(0)
 
+    def drawFan(self,x,y,rad,frac):
+        x = float(x) / self.x
+        y = float(y) / self.x
+        rad = float(rad) / self.x
+        glBegin(GL_TRIANGLE_FAN)
+        num_div = 30
+        dx = 2.0/(num_div-1) * math.pi * frac
+        for i in xrange(num_div):
+            glVertex2f(x+math.cos(dx * i) * rad, y + math.sin(dx * i) * rad)
+        glEnd()
     
     def drawCircle(self,x,y,rad):
         x = float(x) / self.x
@@ -335,10 +349,15 @@ class GLRenderer:
     def render(self):
 #         self.render_to_fbo(self.fbo,self.render_players)
         self.render_to_fbo(self.fbo,self.render_actions)
+
+#        glEnable(GL_STENCIL_TEST)
+#        self.render_to_fbo(self.fbo[self.fbo_id],)
+        #self.fbo_id = 1 - self.fbo_id
         #self.cleanup()
-        self.render_fbo(self.bg_fbo,0)
-        self.render_fbo(self.fbo,.1)
-        #self.render_final_fbo()
+        #self.render_fbo(self.bg_fbo)
+        #self.render_to_fbo(self.fbo[self.fbo_id],self.render_actions)
+        self.render_fbo(self.fbo)
+        self.render_final_fbo()
         #glColor3f(1,1,1);
         #glBegin(GL_TRIANGLES);
         #glVertex2f(0,0);
