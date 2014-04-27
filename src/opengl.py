@@ -511,6 +511,9 @@ class GLRenderer:
     def render_victor(self):
         pass
 
+    def render_game_end(self):
+        pass
+        
     def render_title(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 

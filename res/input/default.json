@@ -16,6 +16,8 @@
     "0 AXIS +0" : ["player1", "RIGHT"],
     "0 BUTTON 0" : ["player1", "BUTTON1"],
     "0 BUTTON 1" : ["player1", "BUTTON2"],
+    "0 BUTTON 5" : ["player1", "BUTTON3"],
+    "0 BUTTON 2" : ["player1", "BUTTON3"],
    
     "KEY 105" : ["player2", "UP"],
     "KEY 107" : ["player2", "DOWN"],
@@ -29,5 +31,7 @@
     "1 AXIS -0" : ["player2", "LEFT"],
     "1 AXIS +0" : ["player2", "RIGHT"],
     "1 BUTTON 0" : ["player2", "BUTTON1"],
-    "1 BUTTON 1" : ["player2", "BUTTON2"]
+    "1 BUTTON 1" : ["player2", "BUTTON2"],
+    "1 BUTTON 2" : ["player2", "BUTTON3"],
+    "1 BUTTON 5" : ["player2", "BUTTON3"]
  }

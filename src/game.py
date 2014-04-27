@@ -19,7 +19,8 @@ from gamecomponents import (SmokeScreenComponent,
                             SpawnDecoyComponent,
                             MinefieldComponent,
                             SpeedBoostComponent,
-                            ButtonInterpreterComponent)
+                            ButtonInterpreterComponent,
+                            TrapComponent)
 
 from uicomponents import DrawScoreComponent, DrawTimerComponent, UpdateTimerComponent, DrawActionsComponent
 
@@ -74,6 +75,7 @@ class Game(object):
         self.component_manager.register_component(SpawnVortexComponent())
         self.component_manager.register_component(DrawVortextComponent())
         self.component_manager.register_component(GrowVortextComponent())
+        self.component_manager.register_component(TrapComponent())
         
         self.entity_manager = EntityManager()
             
@@ -106,6 +108,8 @@ class Game(object):
         self.change_mode(mode)
         self.running = True
 
+        self.entity_manager.commit_changes()
+        
         while self.running:
             dt = self.clock.tick(60) / 1000.0
             
@@ -124,6 +128,7 @@ class Game(object):
             self.mode.update(dt)
             self.mode.draw()
             
+            self.entity_manager.commit_changes()
             pygame.display.flip()
             
     def change_mode(self, new_mode):
