@@ -127,7 +127,7 @@ class BetweenRoundMode(object):
             if player1.winner:
                 game.get_game().renderer.render_victor(0,player1.color,ncolor)
             else:
-                game.get_game().renderer.render_victor(1,player2.color,ncolor)
+                game.get_game().renderer.render_victor(0,player2.color,ncolor)
         elif self.ttl > 1.3:
             game.get_game().renderer.render_victor(1)
         elif self.ttl > 0.7:
