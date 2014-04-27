@@ -104,14 +104,11 @@ class MinefieldComponent(object):
     def handle_action(self, entity, action):
         if action == 'PLACE_MINEFIELD' and entity.minefield_cooldown <= 0:
             m = get_midpoint(entity)
-            x,y = game.get_game().screen_size
-            ratio = float(y)/x
             for r in range(entity.minefield_min_rad, entity.minefield_max_rad, entity.minefield_rad_density):
                 for a in xrange(0, 360, entity.minefield_ang_density):
                     v = Vec2d(0, 1)
                     v.length = r
                     v.angle = a
-                    v[1] = v[1] * ratio
                     p = m + v
                     #pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), 5)
                     game.get_game().renderer.appendCircle( entity.color,int(p[0]), int(p[1]), 5)

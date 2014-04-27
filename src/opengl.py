@@ -34,7 +34,7 @@ class FrameBufferObject:
         self.gl_tex_id = glGenTextures(1)
 
         glBindTexture(GL_TEXTURE_2D, self.gl_tex_id)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, None)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, None)
     
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
@@ -50,8 +50,11 @@ class FrameBufferObject:
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
         
-        self.clear()
         glEnable(GL_POLYGON_SMOOTH)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_ALPHA_TEST)
+        self.clear()
     
     def bind(self):
         glBindFramebuffer(GL_FRAMEBUFFER, self.id)
@@ -73,6 +76,7 @@ class FrameBufferObject:
 class GLRenderer:
     def __init__(self):
         glutInit()
+        glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA);
         self.circle_queue = []
         self.rectangle_queue = []
         vert_shader = createAndCompileShader('''
@@ -89,7 +93,7 @@ class GLRenderer:
                 #version 120
                 uniform vec3 color;
                 void main() {
-                    gl_FragColor = vec4(color,1);
+                    gl_FragColor = vec4(color,1.0);
                 }
                 ''',GL_FRAGMENT_SHADER)
         self.player_shader =glCreateProgram()
@@ -98,6 +102,7 @@ class GLRenderer:
         glLinkProgram(self.player_shader)
 
 
+        gluOrtho2D(0,1,0,1)
 
         self.vbo = vbo.VBO(
                 numpy.array([
@@ -113,6 +118,7 @@ class GLRenderer:
         self.bg_fbo = FrameBufferObject(fbox,fboy)
         self.finalRenderShader();
         self.resize((fbox,fboy))
+        self.cleanup()
 
     
     def finalRenderShader(self):
@@ -151,7 +157,6 @@ class GLRenderer:
         
     def drawBackground(self):
 
-        gluOrtho2D(0,1,0,1)
         glUseProgram(self.player_shader)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         num_split = 10
@@ -179,11 +184,10 @@ class GLRenderer:
         glUniform1f(loc,ratio)
         glUseProgram(0)
 
-        #gluOrtho2D(-1,1,-1,1)
     
     def drawCircle(self,x,y,rad):
         x = float(x) / self.x
-        y = float(y) / self.y
+        y = float(y) / self.x
         rad = float(rad) / self.x
         glBegin(GL_TRIANGLE_FAN)
         num_div = 30
@@ -206,17 +210,17 @@ class GLRenderer:
         y = float(y) / self.y
         w = float(w) / self.x
         h = float(h) / self.y
-        self.drawUVQuad(self,x,y,w,h)
+        self.drawUVQuad(x,y,w,h)
 
 
 
-    def render_ss_quad(self):
+    def render_ss_quad(self, layer=0):
         glBegin(GL_QUADS)
 
-        glTexCoord2f(0, 1); glVertex2f( 0, 0 )
-        glTexCoord2f(1, 1); glVertex2f( 1, 0 )
-        glTexCoord2f(1, 0); glVertex2f( 1, 1)
-        glTexCoord2f(0, 0); glVertex2f( 0, 1)
+        glTexCoord2f(0, 1); glVertex3f( 0, 0,layer )
+        glTexCoord2f(1, 1); glVertex3f( 1, 0,layer )
+        glTexCoord2f(1, 0); glVertex3f( 1, 1,layer)
+        glTexCoord2f(0, 0); glVertex3f( 0, 1,layer)
 
         glEnd()
 
@@ -226,8 +230,6 @@ class GLRenderer:
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        gluOrtho2D(-1,1,-1,1)
-        glColor3f(1, 1, 1)
         glEnable(GL_TEXTURE_2D)
 
         bgloc = glGetUniformLocation(self.final_shader, "bg")
@@ -245,16 +247,15 @@ class GLRenderer:
 
 
 
-    def render_fbo(self,fbo):
+    def render_fbo(self,fbo, layer=0):
         glViewport(0, 0, self.x,self.y)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        gluOrtho2D(-1,1,-1,1)
         glColor3f(1, 1, 1)
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, fbo.gl_tex_id)
-        self.render_ss_quad()
+        self.render_ss_quad(layer)
 
         glDisable(GL_TEXTURE_2D)    
 
@@ -280,7 +281,6 @@ class GLRenderer:
 
     def render_to_fbo(self,fbo, func):
         fbo.bind()
-        glClear(GL_DEPTH_BUFFER_BIT)
         func()
         fbo.unbind()
 
@@ -321,11 +321,11 @@ class GLRenderer:
 
 
     def cleanup(self):
+        self.render_to_fbo(self.fbo,self.clean)
 
-        self.render_to_fbo(self.fbo,\
-                lambda: (glClearColor(0.0, 0.0, 0, 0),
-                glClear(GL_COLOR_BUFFER_BIT))
-                )
+    def clean(self):
+        glClearColor(0.0, 0.0, 0.0, 0.0)
+        glClear(GL_COLOR_BUFFER_BIT)
 
 
 
@@ -333,8 +333,9 @@ class GLRenderer:
     def render(self):
         self.render_to_fbo(self.fbo,self.render_players)
         self.render_to_fbo(self.fbo,self.render_actions)
-        #self.render_fbo(self.bg_fbo)
-        #self.render_fbo(self.fbo)
+        #self.cleanup()
+        self.render_fbo(self.bg_fbo,0)
+        self.render_fbo(self.fbo,.1)
         self.render_final_fbo()
         #glColor3f(1,1,1);
         #glBegin(GL_TRIANGLES);
