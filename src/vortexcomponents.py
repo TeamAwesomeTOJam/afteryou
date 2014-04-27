@@ -36,6 +36,7 @@ class GrowVortextComponent(object):
         entity.unregister_handler('update', self.handle_update)
     
     def handle_update(self, entity, dt):
+        entity.previous_radius = entity.radius
         if entity.radius < entity.max_radius:
             entity.radius += dt * entity.growth_rate
             
@@ -43,11 +44,12 @@ class GrowVortextComponent(object):
 class DrawVortextComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['x', 'y', 'color', 'radius'])
+        verify_attrs(entity, ['x', 'y', 'color', 'radius', ('previous_radius', entity.radius)])
         entity.register_handler('draw', self.handle_draw)
 
     def remove(self, entity):
         entity.unregister_handler('draw', self.handle_draw)
         
     def handle_draw(self, entity):
-        game.get_game().renderer.appendCircle(entity.color, int(entity.x), int(entity.y), entity.radius)
+        if entity.radius != entity.previous_radius:
+            game.get_game().renderer.appendRing(entity.color, int(entity.x), int(entity.y), entity.max_radius, entity.max_radius + 10)

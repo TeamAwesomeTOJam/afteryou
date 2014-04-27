@@ -146,6 +146,7 @@ class GLRenderer:
 
 
     def init_player(self):
+        return
         self.movie = pygame.movie.Movie('/home/mtao/Downloads/g1gabyte.mpg')
         self.movie_screen = pygame.Surface(self.movie.get_size()).convert()
         self.movie.set_display(self.movie_screen)
@@ -310,10 +311,11 @@ class GLRenderer:
             glVertex2f(x+math.cos(dx * i) * rad, y + math.sin(dx * i) * rad)
         glEnd()
 
-    def drawRing(self,x,y,rad1,rad2):
+    def drawRing(self,x,y,rad,rad2):
         x = float(x) / self.x
         y = float(y) / self.x
         rad = float(rad) / self.x
+        rad2 = float(rad2) / self.x
         glBegin(GL_TRIANGLE_STRIP)
         num_div = 30
         dx = 2.0/(num_div-1) * math.pi
@@ -370,11 +372,10 @@ class GLRenderer:
         glLoadIdentity()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        glActiveTexture(GL_TEXTURE2)
-        glBindTexture(GL_TEXTURE_2D,self.mov_tex)
-        loc = glGetUniformLocation(self.final_shader,"p1tex")
-        glUniform1i(loc,2)
-        print loc
+        #glActiveTexture(GL_TEXTURE2)
+        #glBindTexture(GL_TEXTURE_2D,self.mov_tex)
+        #loc = glGetUniformLocation(self.final_shader,"p1tex")
+        #glUniform1i(loc,2)
 
 
         loc = glGetUniformLocation(self.final_shader,"phase")
@@ -516,10 +517,10 @@ class GLRenderer:
         glEnable(GL_TEXTURE_2D)
 
 
-        size = self.movie_screen.get_size()
-        frame = self.movie_screen.get_buffer().raw
-        glBindTexture(GL_TEXTURE_2D,self.mov_tex)
-        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
+        #size = self.movie_screen.get_size()
+        #frame = self.movie_screen.get_buffer().raw
+        #glBindTexture(GL_TEXTURE_2D,self.mov_tex)
+        #glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
 
 #         self.render_to_fbo(self.fbo,self.render_players)
         self.render_to_fbo(self.fbo,self.render_actions)
@@ -564,4 +565,7 @@ class GLRenderer:
         #glVertex2f(0,1);
         #glEnd();
 
+#         size = self.movie_screen.get_size()
+#         frame = self.movie_screen.get_buffer().raw
+#         glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
             
