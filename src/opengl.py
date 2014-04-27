@@ -139,6 +139,17 @@ class GLRenderer:
         self.resize((self.fbox,self.fboy))
         self.cleanup()
         glClearStencil(0);
+        
+        self.init_player()
+
+
+
+
+    def init_player(self):
+        self.movie = pygame.movie.Movie('/home/mtao/Downloads/g1gabyte.mpg')
+        self.movie_screen = pygame.Surface(self.movie.get_size()).convert()
+        self.movie.set_display(self.movie_screen)
+        self.movie.play()
 
     def shrinkRenderShader(self):
         self.counter = 0
@@ -286,6 +297,7 @@ class GLRenderer:
             glVertex2f(x+math.cos(dx * i+rot) * rad, y + math.sin(dx * i+rot) * rad)
         glEnd()
     
+    '''
     def drawCircle(self,x,y,rad):
         x = float(x) / self.x
         y = float(y) / self.x
@@ -297,7 +309,19 @@ class GLRenderer:
         for i in xrange(num_div):
             glVertex2f(x+math.cos(dx * i) * rad, y + math.sin(dx * i) * rad)
         glEnd()
+        '''
 
+    def drawRing(self,x,y,rad1,rad2):
+        x = float(x) / self.x
+        y = float(y) / self.x
+        rad = float(rad) / self.x
+        glBegin(GL_TRIANGLE_STRIP)
+        num_div = 30
+        dx = 2.0/(num_div-1) * math.pi
+        for i in xrange(num_div):
+            glVertex2f(x+math.cos(dx * i) * rad, y + math.sin(dx * i) * rad)
+            glVertex2f(x+math.cos(dx * i) * rad2, y + math.sin(dx * i) * rad2)
+        glEnd()
     
     def drawUVQuad(self,x,y,w,h):
         glBegin(GL_QUADS)
@@ -417,6 +441,12 @@ class GLRenderer:
 
                     glUniform3f(color_location, col[0],col[1],col[2])
                     self.drawCircle(cx,cy,r)
+                elif a==3:
+                    color,cx,cy,r,r2 = v
+                    col = map(lambda x: x/255.0, color)
+
+                    glUniform3f(color_location, col[0],col[1],col[2])
+                    self.drawRing(cx,cy,r,r2)
                 elif a==2:
                     color,cx,cy,r,f = v
                     col = map(lambda x: x/255.0, color)
@@ -445,6 +475,8 @@ class GLRenderer:
 
     def appendFan(self,color, px, py, rad, frac):
         self.draw_queue.append( (2,(color,px,py,rad,frac) ) )
+    def appendRing(self,color, px, py, rad, rad2):
+        self.draw_queue.append( (3,(color,px,py,rad,rad2) ) )
 
 
     def appendPlayerCircle(self,color, px, py, rad):
@@ -455,6 +487,8 @@ class GLRenderer:
 
     def appendPlayerFan(self,color, px, py, rad, frac):
         self.player_draw_queue.append( (2,(color,px,py,rad,frac) ) )
+    def appendPlayerRing(self,color, px, py, rad, rad2):
+        self.player_draw_queue.append( (2,(color,px,py,rad,rad2) ) )
 
     def cleanup(self):
         self.render_to_fbo(self.fbo,self.clean)
@@ -502,4 +536,8 @@ class GLRenderer:
         #glVertex2f(1,0);
         #glVertex2f(0,1);
         #glEnd();
+
+        #size = self.movie_screen.get_size()
+        #frame = self.movie_screen.get_buffer().raw
+        #glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
             
