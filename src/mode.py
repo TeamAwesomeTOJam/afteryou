@@ -1,4 +1,5 @@
 import game
+import entity
 
 
 class AttractMode(object):
@@ -26,6 +27,8 @@ class PlayMode(object):
     def enter(self):
         self.music = game.get_game().resource_manager.get('sound', 'Main Body.ogg')
         self.music.play(loops=-1)
+        
+        game.get_game().entity_manager.add_entity(entity.Entity("vortexspawner"))
     
     def leave(self):
         player1 = game.get_game().entity_manager.get_by_name('player1')
@@ -48,6 +51,12 @@ class PlayMode(object):
             
         for decoy in game.get_game().entity_manager.get_by_tag('decoy'):
             game.get_game().entity_manager.remove_entity(decoy)
+        
+        for vortex in game.get_game().entity_manager.get_by_tag('vortex'):
+            game.get_game().entity_manager.remove_entity(vortex)  
+            
+        for vortexspawner in game.get_game().entity_manager.get_by_tag('vortexspawner'):
+            game.get_game().entity_manager.remove_entity(vortexspawner)          
             
         timer.time_remaining = timer.time_limit
         self.music.stop()

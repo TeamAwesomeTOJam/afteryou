@@ -89,7 +89,7 @@ class  SelfDestructComponent(object):
 class MinefieldComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['minefield_width', 'minefield_ang_density', 'minefield_rad_density', 'minefield_max_rad', 'minefield_min_rad', 'minefield_cooldown_time', 'x', 'y', 'dx', 'dy', 'width', 'height', ('minefield_cooldown',0), 'color'])
+        verify_attrs(entity, ['minefield_ang_density', 'minefield_rad_density', 'minefield_max_rad', 'minefield_min_rad', 'minefield_cooldown_time', 'x', 'y', 'dx', 'dy', 'width', 'height', ('minefield_cooldown',0), 'color'])
         entity.register_handler('update', self.handle_update)
         entity.register_handler('action', self.handle_action)
     
@@ -105,13 +105,8 @@ class MinefieldComponent(object):
         if action == 'PLACE_MINEFIELD' and entity.minefield_cooldown <= 0:
             m = get_midpoint(entity)
             for r in range(entity.minefield_min_rad, entity.minefield_max_rad, entity.minefield_rad_density):
-                d = Vec2d(entity.dx, entity.dy)
-                if d.get_length_sqrd() == 0:
-                    anglestart = 0
-                    angleend = 360
-                else:
-                    anglestart = int(d.angle - entity.minefield_width/2)
-                    angleend = int(d.angle + entity.minefield_width/2)
+                anglestart = 0
+                angleend = 360
                 for a in xrange(anglestart, angleend, entity.minefield_ang_density):
                     v = Vec2d(0, 1)
                     v.length = r
