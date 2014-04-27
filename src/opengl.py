@@ -297,7 +297,6 @@ class GLRenderer:
             glVertex2f(x+math.cos(dx * i+rot) * rad, y + math.sin(dx * i+rot) * rad)
         glEnd()
     
-    '''
     def drawCircle(self,x,y,rad):
         x = float(x) / self.x
         y = float(y) / self.x
@@ -309,7 +308,6 @@ class GLRenderer:
         for i in xrange(num_div):
             glVertex2f(x+math.cos(dx * i) * rad, y + math.sin(dx * i) * rad)
         glEnd()
-        '''
 
     def drawRing(self,x,y,rad1,rad2):
         x = float(x) / self.x
@@ -537,7 +535,7 @@ class GLRenderer:
         #glVertex2f(0,1);
         #glEnd();
 
-        #size = self.movie_screen.get_size()
-        #frame = self.movie_screen.get_buffer().raw
-        #glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
+        size = self.movie_screen.get_size()
+        frame = self.movie_screen.get_buffer().raw
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,size[0],size[1],0,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,frame)
             
