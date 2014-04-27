@@ -79,6 +79,7 @@ class GLRenderer:
         glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA);
         self.circle_queue = []
         self.rectangle_queue = []
+        self.draw_queue = []
         vert_shader = createAndCompileShader('''
 
                 #version 120
@@ -293,29 +294,30 @@ class GLRenderer:
 
         color_location = glGetUniformLocation(self.player_shader, "color")
             
-        for circle in self.circle_queue:
-            color,cx,cy,r = circle
-            col = map(lambda x: x/255.0, color)
+        for item in self.draw_queue:
+            (a,v) = item
+            if a==0:
+                color,cx,cy,r = v
+                col = map(lambda x: x/255.0, color)
 
-            glUniform3f(color_location, col[0],col[1],col[2])
-            self.drawCircle(cx,cy,r)
+                glUniform3f(color_location, col[0],col[1],col[2])
+                self.drawCircle(cx,cy,r)
+            elif a==1:
+                color,x,y,w,h = v
+                col = map(lambda x: x/255.0, color)
 
-        for rectangle in self.rectangle_queue:
-            color,x,y,w,h = rectangle
-            col = map(lambda x: x/255.0, color)
+                glUniform3f(color_location, col[0],col[1],col[2])
+                self.drawRect(x,y,w,h)
 
-            glUniform3f(color_location, col[0],col[1],col[2])
-            self.drawRect(x,y,w,h)
         glUseProgram(0)
         
-        self.circle_queue = []
-        self.rectangle_queue = []
+        self.draw_queue = []
 
     def appendCircle(self,color, px, py, rad):
-        self.circle_queue.append( (color,px,py,rad) )
+        self.draw_queue.append( (0,(color,px,py,rad) ) )
 
     def appendRect(self,color, px, py, w,h):
-        self.rectangle_queue.append( (color,px,py,w,h) )
+        self.draw_queue.append( (1,(color,px,py,w,h)) )
 
 
 
@@ -336,7 +338,7 @@ class GLRenderer:
         #self.cleanup()
         self.render_fbo(self.bg_fbo,0)
         self.render_fbo(self.fbo,.1)
-        self.render_final_fbo()
+        #self.render_final_fbo()
         #glColor3f(1,1,1);
         #glBegin(GL_TRIANGLES);
         #glVertex2f(0,0);
