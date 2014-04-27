@@ -51,11 +51,6 @@ class FrameBufferObject:
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
         
-        glEnable(GL_POLYGON_SMOOTH)
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
-        #glEnable(GL_ALPHA_TEST)
-        glDisable(GL_DEPTH_TEST)
         self.clear()
     
     def bind(self):
@@ -79,6 +74,11 @@ class GLRenderer:
     def __init__(self):
         glutInit()
         glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL);
+        glEnable(GL_POLYGON_SMOOTH)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+        #glEnable(GL_ALPHA_TEST)
+        glDisable(GL_DEPTH_TEST)
         self.draw_queue = []
         self.player_draw_queue = []
         vert_shader = createAndCompileShader('''
@@ -142,6 +142,8 @@ class GLRenderer:
         glClearStencil(0);
         
         self.init_player()
+        self.load_textures()
+
 
 
 
@@ -154,6 +156,37 @@ class GLRenderer:
         self.movie.play()
         self.mov_tex = glGenTextures(1)
 
+
+    def load_tex_from_file(self, filename):
+        image      = pygame.image.load(filename)
+        w,h = image.get_size()
+        tex = glGenTextures(1)
+        image_data = pygame.image.tostring(image, "RGBA", 1)
+        glBindTexture(GL_TEXTURE_2D,tex)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE)
+        glTexImage2D(
+                GL_TEXTURE_2D, 0,
+                GL_RGBA,
+                w, h, 0,
+                GL_RGBA, GL_UNSIGNED_BYTE,
+                image_data)
+        return tex
+
+
+
+    def load_textures(self):
+        glEnable(GL_TEXTURE_2D)
+        filename   = "res/images/end.png"
+        self.end_tex = self.load_tex_from_file(filename)
+
+        filename   = "res/images/inbetween.png"
+        self.inbetween_tex = self.load_tex_from_file(filename)
+
+
+
     def shrinkRenderShader(self):
         self.counter = 0
         vert_shader = createAndCompileShader('''
@@ -163,7 +196,6 @@ class GLRenderer:
                 void main() {
                 gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
                     st = gl_MultiTexCoord0.st;
-                    st.t = 1-st.t;
                 }
                 ''',GL_VERTEX_SHADER)
         frag_shader = createAndCompileShader('''
@@ -211,6 +243,7 @@ class GLRenderer:
                 void main() {
                 gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
                     st = gl_MultiTexCoord0.st;
+                    st.t = 1-st.t;
                 }
                 ''',GL_VERTEX_SHADER)
         frag_shader = createAndCompileShader('''
@@ -255,9 +288,9 @@ class GLRenderer:
         
     def drawBackground(self):
 
+        return
         glUseProgram(self.player_shader)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        return
         num_split = 10
         dx = 1.0 / num_split
         color_location = glGetUniformLocation(self.player_shader, "color")
@@ -345,10 +378,10 @@ class GLRenderer:
     def render_ss_quad(self, layer=0):
         glBegin(GL_QUADS)
 
-        glTexCoord2f(0, 1); glVertex3f( 0, 0,layer )
-        glTexCoord2f(1, 1); glVertex3f( 1, 0,layer )
-        glTexCoord2f(1, 0); glVertex3f( 1, 1,layer)
-        glTexCoord2f(0, 0); glVertex3f( 0, 1,layer)
+        glTexCoord2f(0, 0); glVertex3f( 0, 0,layer )
+        glTexCoord2f(1, 0); glVertex3f( 1, 0,layer )
+        glTexCoord2f(1, 1); glVertex3f( 1, 1,layer)
+        glTexCoord2f(0, 1); glVertex3f( 0, 1,layer)
 
         glEnd()
 
@@ -394,6 +427,8 @@ class GLRenderer:
         self.render_ss_quad()
 
         glDisable(GL_TEXTURE_2D)    
+        glActiveTexture(GL_TEXTURE0)
+        glUseProgram(0)
 
 
     def render_tex(self,tex, layer=0):
@@ -509,13 +544,20 @@ class GLRenderer:
 
 
     def render_victor(self):
-        pass
+        glUseProgram(0)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        self.render_tex(self.inbetween_tex)
 
     def render_game_end(self):
+        glUseProgram(0)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        #self.render_tex(self.end_tex)
+        self.render_fbo(self.fbo)
         pass
         
     def render_title(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        self.render_tex(self.inbetween_tex)
 
     def render_tex_crap(self):
         glUseProgram(0)
@@ -544,6 +586,8 @@ class GLRenderer:
 
 
     def render_play(self):
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
         if DO_TEXTURES: self.render_tex_crap()
 
 #         self.render_to_fbo(self.fbo,self.render_players)
