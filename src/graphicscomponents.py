@@ -6,7 +6,7 @@ import game
 class DrawCircleComponent(object):
     
     def add(self, entity):
-        verify_attrs(entity, ['x', 'y', 'color', 'height', 'width'])
+        verify_attrs(entity, ['visible', 'x', 'y', 'color', 'height', 'width'])
         
         entity.register_handler('draw', self.handle_draw)
     
@@ -18,5 +18,6 @@ class DrawCircleComponent(object):
 #         screen_x, screen_y = transform(entity.x, entity.y)
 #         r = pygame.Rect(int(screen_x), int(screen_y), entity.height, entity.width)
 #         pygame.draw.ellipse(surface, entity.color, r)
-        p = get_midpoint(entity)
-        game.get_game().renderer.appendPlayerCircle( entity.color,p.x,p.y, entity.height/2) 
+        if entity.visible:
+            p = get_midpoint(entity)
+            game.get_game().renderer.appendPlayerCircle( entity.color,p.x,p.y, entity.height/2) 

@@ -8,6 +8,10 @@
     "trap_in_rad" : 200,
     "trap_out_rad" : 210,
     
+    "invisibility_duration" : 1,
+    "invisibility_cooldown_time" : 7,
+    "visible" : true,
+    
     "decoy_cooldown_time" : 7,
     
     "minefield_cooldown_time" : 7,
@@ -39,6 +43,7 @@
         "MinefieldComponent",
         "SpeedBoostComponent",
         "ButtonInterpreterComponent",
-        "TrapComponent"
+        "TrapComponent",
+        "HideComponent"
     ]
 }

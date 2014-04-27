@@ -75,17 +75,23 @@ class DrawActionsComponent(object):
         if player.chasing:
             top_bar_ratio = 1 - player.speed_boost_activation_cooldown / player.speed_boost_activation_cooldown_time
             bottom_bar_ratio = 1 - player.minefield_cooldown / player.minefield_cooldown_time
+            bottom_bottom_bar_ratio = 1 - player.trap_cooldown / player.trap_cooldown_time
         else:
             top_bar_ratio = 1 - player.smoke_screen_cooldown / player.smoke_screen_cooldown_time
             bottom_bar_ratio = 1 - player.decoy_cooldown / player.decoy_cooldown_time
+            bottom_bottom_bar_ratio = 1 - player.invisibility_cooldown / player.invisibility_cooldown_time
         
         if entity.direction == 1:
-            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y, entity.width, entity.height/2 - 2)
-            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y, entity.width * top_bar_ratio, entity.height/2 - 2)
-            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y + entity.height/2 + 2, entity.width, entity.height/2 - 2)
-            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/2 + 2, entity.width * bottom_bar_ratio, entity.height/2 - 2)
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y, entity.width, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y, entity.width * top_bar_ratio, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y + entity.height/3 + 2, entity.width, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/3 + 2, entity.width * bottom_bar_ratio, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y + 2*entity.height/3 + 2, entity.width, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + 2*entity.height/3 + 2, entity.width * bottom_bottom_bar_ratio, entity.height/3 - 2)
         else:
-            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y, entity.width, entity.height/2 - 2)
-            game.get_game().renderer.appendRect((200,200,200), entity.x + entity.width * (1 - top_bar_ratio), entity.y, entity.width * top_bar_ratio, entity.height/2 - 2)
-            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y + entity.height/2 + 2, entity.width, entity.height/2 - 2)
-            game.get_game().renderer.appendRect((200,200,200), entity.x + entity.width * (1- bottom_bar_ratio), entity.y + entity.height/2 + 2, entity.width * bottom_bar_ratio, entity.height/2 - 2)
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y, entity.width, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x + entity.width * (1 - top_bar_ratio), entity.y, entity.width * top_bar_ratio, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y + entity.height/3 + 2, entity.width, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x + entity.width * (1- bottom_bar_ratio), entity.y + entity.height/3 + 2, entity.width * bottom_bar_ratio, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y + 2*entity.height/3 + 2, entity.width, entity.height/3 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x + entity.width * (1- bottom_bottom_bar_ratio), entity.y + 2*entity.height/3 + 2, entity.width * bottom_bottom_bar_ratio, entity.height/3 - 2)

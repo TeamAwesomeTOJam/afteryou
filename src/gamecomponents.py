@@ -166,6 +166,31 @@ class SpeedBoostComponent(object):
             entity.speed_boost_time = entity.speed_boost_duration_time
             entity.speed_boost_activation_cooldown = entity.speed_boost_activation_cooldown_time
             
+class HideComponent(object):
+    
+    def add(self, entity):
+        verify_attrs(entity, [('invisibility_time', 0), 'invisibility_duration', 'invisibility_cooldown_time', 'visible', ('invisibility_cooldown',0)])
+        entity.register_handler('update', self.handle_update)
+        entity.register_handler('action', self.handle_action)
+    
+    def remove(self, entity):
+        entity.unregister_handler('action', self.handle_action)
+        entity.unregister_handler('update', self.handle_update)
+    
+    def handle_update(self, entity, dt):
+        if entity.invisibility_cooldown >= 0:
+            entity.invisibility_cooldown -= dt
+        if entity.invisibility_time >= 0:
+            entity.invisibility_time -= dt
+            if entity.invisibility_time <= 0:
+                entity.visible = True
+    
+    def handle_action(self, entity, action):
+        if action == 'HIDE' and entity.invisibility_cooldown <= 0:
+            entity.visible = False
+            entity.invisibility_time = entity.invisibility_duration
+            entity.invisibility_cooldown = entity.invisibility_cooldown_time
+            
 class ButtonInterpreterComponent(object):
     
     def add(self, entity):
@@ -189,5 +214,7 @@ class ButtonInterpreterComponent(object):
         elif event.action == 'BUTTON3' and event.value:
             if entity.chasing:
                 entity.handle('action', 'TRAP')
+            else:
+                entity.handle('action','HIDE')
                 
      
