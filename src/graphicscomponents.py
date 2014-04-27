@@ -1,5 +1,6 @@
 import pygame
 from component import verify_attrs
+import game
 
 
 class DrawCircleComponent(object):

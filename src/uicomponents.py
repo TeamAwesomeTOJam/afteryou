@@ -1,4 +1,3 @@
-import pygame
 import game
 from component import verify_attrs
 import mode
@@ -15,13 +14,12 @@ class DrawScoreComponent(object):
     
     def handle_draw(self, entity, surface, transform):
         player = game.get_game().entity_manager.get_by_name(entity.target)
-        rect = pygame.Rect(entity.x, entity.y, entity.width, entity.height)
         radius = entity.height/2
         
         if player.chasing:
-            pygame.draw.rect(surface, (200,200,200), rect)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y, entity.width, entity.height)
         else:
-            pygame.draw.rect(surface, (0,0,0), rect) 
+            game.get_game().renderer.appendRect((0,0,0), entity.x, entity.y, entity.width, entity.height)
         
         for i in range(player.score):
             if entity.direction == 1:
@@ -29,10 +27,7 @@ class DrawScoreComponent(object):
             else:
                 start_x = entity.x + entity.width - radius
             pos = (start_x + (i * radius * 2 * entity.direction), entity.y + radius)
-            pygame.draw.circle(surface, player.color, pos, radius)
-            game.get_game().renderer.appendCircle( 
-                    player.color,entity.x, entity.y, radius
-                    )
+            game.get_game().renderer.appendCircle(player.color, pos[0], pos[1], radius)
 
 
 class DrawTimerComponent(object):
@@ -46,11 +41,8 @@ class DrawTimerComponent(object):
         
     def handle_draw(self, entity, surface, transform):
         ratio = entity.time_remaining / entity.time_limit
-        remaining_rect = pygame.Rect(entity.x, entity.y, int(entity.width * ratio), entity.height)
-        full_rect = pygame.Rect(entity.x, entity.y, entity.width, entity.height)
-        
-        pygame.draw.rect(surface, (0,0,0), full_rect)
-        pygame.draw.rect(surface, (200,200,200), remaining_rect)
+        game.get_game().renderer.appendRect((0,0,0), entity.x, entity.y, entity.width * ratio, entity.height)
+        game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y, entity.width * ratio, entity.height)
     
 
 class UpdateTimerComponent(object):
