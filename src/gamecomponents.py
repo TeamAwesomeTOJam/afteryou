@@ -19,7 +19,7 @@ class SmokeScreenComponent(object):
     def handle_action(self, entity, action):
         if action == 'SMOKE_SCREEN' and entity.smoke_screen_cooldown <= 0:
             p = get_midpoint(entity)
-            game.get_game().renderer.appendPlayerCircle( 
+            game.get_game().renderer.appendCircle( 
                     entity.color,int(p[0]), int(p[1]), entity.smoke_screen_rad
                     )
 
@@ -29,6 +29,31 @@ class SmokeScreenComponent(object):
     def handle_update(self, entity, dt):
         if entity.smoke_screen_cooldown >= 0:
             entity.smoke_screen_cooldown -= dt
+            
+class TrapComponent(object):
+    
+    def add(self, entity):
+        verify_attrs(entity, ['trap_in_rad', 'trap_out_rad', 'trap_cooldown_time', 'color', 'x', 'y', 'width', 'height', ('trap_cooldown', 0)])
+        entity.register_handler('action', self.handle_action)
+        entity.register_handler('update', self.handle_update)
+ 
+    def remove(self, entity):
+        entity.unregister_handler('action', self.handle_action)
+        entity.unregister_handler('update', self.handle_update)
+    
+    def handle_action(self, entity, action):
+        if action == 'TRAP' and entity.trap_cooldown <= 0:
+            p = get_midpoint(entity)
+            game.get_game().renderer.appendRing( 
+                    entity.color,int(p[0]), int(p[1]), entity.trap_out_rad, entity.trap_in_rad
+                    )
+
+            #pygame.draw.circle(game.get_game().screen, entity.color, (int(p[0]), int(p[1])), entity.smoke_screen_rad)
+            entity.trap_cooldown = entity.trap_cooldown_time
+    
+    def handle_update(self, entity, dt):
+        if entity.trap_cooldown >= 0:
+            entity.trap_cooldown -= dt
 
 class SpawnDecoyComponent(object):
     
@@ -161,5 +186,8 @@ class ButtonInterpreterComponent(object):
                 entity.handle('action', 'PLACE_MINEFIELD')
             else:
                 entity.handle('action', 'CREATE_DECOY')
+        elif event.action == 'BUTTON3' and event.value:
+            if entity.chasing:
+                entity.handle('action', 'TRAP')
                 
      

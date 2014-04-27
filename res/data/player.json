@@ -4,6 +4,10 @@
     "width" : 40,
     "smoke_screen_cooldown_time" : 5,
     "smoke_screen_rad" : 200,
+    "trap_cooldown_time" : 5,
+    "trap_in_rad" : 200,
+    "trap_out_rad" : 210,
+    
     "decoy_cooldown_time" : 7,
     
     "minefield_cooldown_time" : 7,
@@ -34,6 +38,7 @@
         "SpawnDecoyComponent",
         "MinefieldComponent",
         "SpeedBoostComponent",
-        "ButtonInterpreterComponent"
+        "ButtonInterpreterComponent",
+        "TrapComponent"
     ]
 }
