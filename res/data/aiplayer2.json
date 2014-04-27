@@ -1,8 +1,8 @@
 {
     "name" : "aiplayer2",
     "chasing" : false,
-    "x" : 50, "y" : 360,
-    "color" : [255,0,0],
+    "x" : 1170, "y" : 360,
+    "color" : [0,255,0],
     
     "includes" : ["aiplayer"]
     

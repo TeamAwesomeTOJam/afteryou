@@ -109,8 +109,6 @@ class Game(object):
         self.entity_manager.add_entity(Entity("actionui-player2"))
         self.entity_manager.add_entity(Entity("timerui"))
         
-        self.entity_manager.add_entity(Entity('aiplayer1'))
-        self.entity_manager.add_entity(Entity('aiplayer2'))
         
         
         self.renderer.createBackground()

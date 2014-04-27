@@ -1,5 +1,6 @@
 import game
 import entity
+from entity import Entity
 
 
 class AttractMode(object):
@@ -7,9 +8,21 @@ class AttractMode(object):
     def enter(self):
         self.music = game.get_game().resource_manager.get('sound', 'Prelude.ogg')
         self.music.play()
+        game.get_game().entity_manager.add_entity(Entity('aiplayer1'))
+        game.get_game().entity_manager.add_entity(Entity('aiplayer2'))
+        game.get_game().renderer.cleanup()
     
     def leave(self):
         self.music.stop()
+        for decoy in game.get_game().entity_manager.get_by_tag('decoy'):
+            game.get_game().entity_manager.remove_entity(decoy)
+            
+        game.get_game().entity_manager.remove_entity(game.get_game().entity_manager.get_by_name('aiplayer1'))
+        game.get_game().entity_manager.remove_entity(game.get_game().entity_manager.get_by_name('aiplayer2'))
+        game.get_game().entity_manager.commit_changes()
+        
+        game.get_game().renderer.draw_modes = []
+        game.get_game().renderer.player_draw_modes = []
     
     def handle_event(self, event):
         if event.action not in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
@@ -18,10 +31,12 @@ class AttractMode(object):
     def update(self, dt):
         for entity in game.get_game().entity_manager.get_by_tag('aiplayer'):
             entity.handle('update', dt)
+        for entity in game.get_game().entity_manager.get_by_tag('decoy'):
+            entity.handle('update', dt)
     
     def draw(self):
-        for entity in game.get_game().entity_manager.get_by_tag('aiplayer'):
-            entity.handle('draw')
+        game.get_game().view.draw()
+        game.get_game().renderer.render_title()
     
 
 class PlayMode(object):
@@ -29,7 +44,7 @@ class PlayMode(object):
     def enter(self):
         self.music = game.get_game().resource_manager.get('sound', 'Main Body.ogg')
         self.music.play(loops=-1)
-        
+        game.get_game().renderer.cleanup()
         game.get_game().entity_manager.add_entity(entity.Entity("vortexspawner"))
     
     def leave(self):

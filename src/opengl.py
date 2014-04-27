@@ -544,7 +544,7 @@ class GLRenderer:
 
     def cleanup(self):
         self.render_to_fbo(self.fbo,self.clean)
-
+        self.render_to_fbo(self.bg_fbo,self.clean)
     def clean(self):
         glClearColor(0.0, 0.0, 0.0, 0.0)
         glClear(GL_COLOR_BUFFER_BIT)
@@ -576,8 +576,9 @@ class GLRenderer:
         self.render_final_fbo()
         
     def render_title(self):
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        self.render_tex(self.end_tex)
+        self.render_play()
+#         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+#         self.render_tex(self.end_tex)
 
     def render_tex_crap(self):
         glUseProgram(0)

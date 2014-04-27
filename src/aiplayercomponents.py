@@ -17,7 +17,7 @@ class AIMovementComponent(object):
         d = Vec2d(entity.dx, entity.dy)
         d.length = 1
         r = randrange(-50,50)
-        d.angle += r*dt
+        d.angle += r
         entity.dx = d[0]
         entity.dy = d[1]
         
