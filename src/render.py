@@ -8,9 +8,7 @@ class Render(object):
 
 class View(object):
     
-    def __init__(self, surface, area, layers=None, entity_name=None):
-        self.surface = surface
-        self.area = area
+    def __init__(self, layers=None, entity_name=None):
         self.layers = layers if layers != None else []
         self.entity_name = entity_name
     
@@ -23,12 +21,12 @@ class View(object):
         self.layers.append(layer)
         
     def draw(self):
-        self.surface.set_clip(self.area)
+#         self.surface.set_clip(self.area)
         
         for layer in self.layers:
             layer.draw(self)
             
-        self.surface.set_clip(None)
+#         self.surface.set_clip(None)
 
 
 class StaticLayer(object):
@@ -95,4 +93,4 @@ class SimpleLayer(object):
         
     def draw(self, view):        
         for entity in game.get_game().entity_manager.get_by_tag(self.tag):
-            entity.handle('draw', view.surface, lambda x, y : (x, y))
+            entity.handle('draw')

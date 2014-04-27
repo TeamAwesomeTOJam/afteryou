@@ -12,7 +12,7 @@ class DrawScoreComponent(object):
     def remove(self, entity):
         entity.unregister_handler('draw', self.handle_draw)
     
-    def handle_draw(self, entity, surface, transform):
+    def handle_draw(self, entity):
         player = game.get_game().entity_manager.get_by_name(entity.target)
         radius = entity.height/2
         
@@ -39,7 +39,7 @@ class DrawTimerComponent(object):
     def remove(self, entity):
         entity.unregister_handler('draw', self.handle_draw)
         
-    def handle_draw(self, entity, surface, transform):
+    def handle_draw(self, entity):
         ratio = entity.time_remaining / entity.time_limit
         game.get_game().renderer.appendRect((0,0,0), entity.x, entity.y, entity.width * ratio, entity.height)
         game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y, entity.width * ratio, entity.height)

@@ -32,9 +32,6 @@ from opengl import GLRenderer
 
 _game = None
 
-USE_RENDERER = False
-USE_RENDERER = True
-
 
 class Game(object):
     
@@ -51,10 +48,7 @@ class Game(object):
         pygame.display.set_caption('After You!')
                                    
         self.clock = pygame.time.Clock()
-        if USE_RENDERER:
-            self.screen = pygame.display.set_mode(self.screen_size, pygame.OPENGL | pygame.DOUBLEBUF | pygame.HWSURFACE)
-        else:
-            self.screen = pygame.display.set_mode(self.screen_size)
+        self.screen = pygame.display.set_mode(self.screen_size, pygame.OPENGL | pygame.DOUBLEBUF | pygame.HWSURFACE)
         
         self.component_manager = componentmanager.ComponentManager()
         self.component_manager.register_component(MovementComponent())
@@ -86,13 +80,10 @@ class Game(object):
 
         self.input_manager = InputManager()
         
-        if USE_RENDERER:
-            self.renderer = GLRenderer()
-            self.renderer.resize(self.screen_size)
+        self.renderer = GLRenderer()
+        self.renderer.resize(self.screen_size)
        
-
-        self.background_view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [BackgroundLayer()])
-        self.view = View(self.screen, pygame.Rect(0, 0, *self.screen_size), [SimpleLayer('draw'), SimpleLayer('ui')])
+        self.view = View([SimpleLayer('draw'), SimpleLayer('ui')])
         
     def run(self, mode):
         p1 = Entity("player1")
@@ -103,10 +94,7 @@ class Game(object):
         self.entity_manager.add_entity(Entity("scoreui-player2"))
         self.entity_manager.add_entity(Entity("timerui"))
         
-        if USE_RENDERER:
-            self.renderer.createBackground()
-        else:
-            self.background_view.draw()
+        self.renderer.createBackground()
 
         self.change_mode(mode)
         self.running = True
@@ -127,10 +115,8 @@ class Game(object):
                     self.mode.handle_event(event)
             
             self.mode.update(dt)
-            if USE_RENDERER:
-                self.renderer.render()
-            else:
-                self.mode.draw()
+            self.mode.draw()
+            self.renderer.render()
             
             self.entity_manager.cleanup()
             
