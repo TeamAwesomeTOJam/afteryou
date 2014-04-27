@@ -316,6 +316,12 @@ class GLRenderer:
 
                 glUniform3f(color_location, col[0],col[1],col[2])
                 self.drawCircle(cx,cy,r)
+            elif a==2:
+                color,cx,cy,r,f = v
+                col = map(lambda x: x/255.0, color)
+
+                glUniform3f(color_location, col[0],col[1],col[2])
+                self.drawFan(cx,cy,r,f)
             elif a==1:
                 color,x,y,w,h = v
                 col = map(lambda x: x/255.0, color)
@@ -333,6 +339,8 @@ class GLRenderer:
     def appendRect(self,color, px, py, w,h):
         self.draw_queue.append( (1,(color,px,py,w,h)) )
 
+    def appendFan(self,color, px, py, rad, frac):
+        self.draw_queue.append( (2,(color,px,py,rad,frac) ) )
 
 
 
@@ -350,7 +358,7 @@ class GLRenderer:
 #         self.render_to_fbo(self.fbo,self.render_players)
         self.render_to_fbo(self.fbo,self.render_actions)
 
-#        glEnable(GL_STENCIL_TEST)
+        glEnable(GL_STENCIL_TEST)
 #        self.render_to_fbo(self.fbo[self.fbo_id],)
         #self.fbo_id = 1 - self.fbo_id
         #self.cleanup()
