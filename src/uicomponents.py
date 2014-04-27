@@ -1,5 +1,5 @@
 import game
-from component import verify_attrs
+from component import verify_attrs, get_midpoint
 import mode
 
 
@@ -19,7 +19,7 @@ class DrawScoreComponent(object):
         if player.chasing:
             game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y, entity.width, entity.height)
         else:
-            game.get_game().renderer.appendRect((1,1,1), entity.x, entity.y, entity.width, entity.height)
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y, entity.width, entity.height)
         
         for i in range(player.score):
             if entity.direction == 1:
@@ -41,8 +41,9 @@ class DrawTimerComponent(object):
         
     def handle_draw(self, entity):
         ratio = entity.time_remaining / entity.time_limit
-        game.get_game().renderer.appendRect((1,1,1), entity.x, entity.y, entity.width, entity.height)
-        game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y, entity.width * ratio, entity.height)
+        x, y = get_midpoint(entity)
+        game.get_game().renderer.appendCircle((50,50,50), x, y, entity.width/2)
+        game.get_game().renderer.appendFan((200,200,200), x, y, entity.width/2, ratio)
     
 
 class UpdateTimerComponent(object):
@@ -69,22 +70,22 @@ class DrawActionsComponent(object):
     def remove(self, entity):
         entity.unregister_handler('draw', self.handle_draw)
         
-    def handle_draw(self, entity, surface, transform):
+    def handle_draw(self, entity):
         player = game.get_game().entity_manager.get_by_name(entity.target)
         if player.chasing:
-            ratio = player.speed_boost_activation_cooldown / player.speed_boost_activation_cooldown_time
-            game.get_game().renderer.appendRect((1,1,1), entity.x, entity.y, entity.width, entity.height/2)
-            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/2, entity.width * ratio, entity.height/2)
+            ratio = 1 - player.speed_boost_activation_cooldown / player.speed_boost_activation_cooldown_time
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y, entity.width, entity.height/2 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y, entity.width * ratio, entity.height/2 - 2)
             
-            ratio = player.minefield_cooldown / player.minefield_cooldown_time
-            game.get_game().renderer.appendRect((1,1,1), entity.x, entity.y, entity.width, entity.height/2)
-            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/2, entity.width * ratio, entity.height/2)
+            ratio = 1 - player.minefield_cooldown / player.minefield_cooldown_time
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y + entity.height/2 + 2, entity.width, entity.height/2 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/2 + 2, entity.width * ratio, entity.height/2 - 2)
         else:
-            ratio = player.smoke_screen_cooldown / player.smoke_screen_cooldown_time
-            game.get_game().renderer.appendRect((1,1,1), entity.x, entity.y, entity.width, entity.height/2)
-            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/2, entity.width * ratio, entity.height/2)
+            ratio = 1 - player.smoke_screen_cooldown / player.smoke_screen_cooldown_time
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y, entity.width, entity.height/2 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y, entity.width * ratio, entity.height/2 - 2)
             
-            ratio = player.decoy_cooldown_time / player.decoy_cooldown
-            game.get_game().renderer.appendRect((1,1,1), entity.x, entity.y, entity.width, entity.height/2)
-            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/2, entity.width * ratio, entity.height/2)
+            ratio = 1 - player.decoy_cooldown / player.decoy_cooldown_time
+            game.get_game().renderer.appendRect((50,50,50), entity.x, entity.y  + entity.height/2 + 2, entity.width, entity.height/2 - 2)
+            game.get_game().renderer.appendRect((200,200,200), entity.x, entity.y + entity.height/2 + 2, entity.width * ratio, entity.height/2 - 2)
     

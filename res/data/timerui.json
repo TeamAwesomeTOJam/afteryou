@@ -1,9 +1,9 @@
 {
     "name" : "timer",   
-    "x" : 640,
-    "y" : 10,
-    "width" : 200,
-    "height" : 20,
+    "x" : 600,
+    "y" : 0,
+    "width" : 80,
+    "height" : 80,
     "time_limit" : 30,
     
     "components" : ["DrawTimerComponent", "UpdateTimerComponent"],
