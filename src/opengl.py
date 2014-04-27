@@ -77,9 +77,9 @@ class GLRenderer:
     def __init__(self):
         glutInit()
         glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL);
-        #glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-        #glDepthMask(GL_FALSE);
-        #glStencilFunc(GL_NOTEQUAL,0,0xFF)
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        glDepthMask(GL_FALSE);
+        glStencilFunc(GL_NOTEQUAL,0,0xFF)
         self.circle_queue = []
         self.rectangle_queue = []
         self.draw_queue = []
