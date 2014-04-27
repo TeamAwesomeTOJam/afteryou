@@ -35,20 +35,20 @@ class AIActionComponent(object):
         if entity.time_since_action <= 0:
             entity.time_since_action = 10
             action = randrange(1,3)
-        if action == 1:
-            if entity.chasing:
-                entity.handle('action', 'SPEED_BOOST')
-            else:
-                entity.handle('action', 'SMOKE_SCREEN')
-        elif action == 2:
-            if entity.chasing:
-                entity.handle('action', 'PLACE_MINEFIELD')
-            else:
-                entity.handle('action', 'CREATE_DECOY')
-        elif action == 3:
-            if entity.chasing:
-                entity.handle('action', 'TRAP')
-            else:
-                entity.handle('action','HIDE')
+            if action == 1:
+                if entity.chasing:
+                    entity.handle('action', 'SPEED_BOOST')
+                else:
+                    entity.handle('action', 'SMOKE_SCREEN')
+            elif action == 2:
+                if entity.chasing:
+                    entity.handle('action', 'PLACE_MINEFIELD')
+                else:
+                    entity.handle('action', 'CREATE_DECOY')
+            elif action == 3:
+                if entity.chasing:
+                    entity.handle('action', 'TRAP')
+                else:
+                    entity.handle('action','HIDE')
         
         

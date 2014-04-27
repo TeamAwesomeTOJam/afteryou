@@ -25,9 +25,6 @@
     "speed_boost_activation_cooldown_time" : 10,
     
     "tags" : [
-        "draw",
-        "draw_as_player",
-        "update",
         "aiplayer"
     ],
             

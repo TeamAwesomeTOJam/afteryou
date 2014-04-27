@@ -13,6 +13,8 @@ from component import (AnimationComponent,
 
 from graphicscomponents import DrawCircleComponent
 
+from aiplayercomponents import AIActionComponent, AIMovementComponent
+
 from gamecomponents import (SmokeScreenComponent,
                             DecoyMovementComponent,
                             SelfDestructComponent,
@@ -78,6 +80,8 @@ class Game(object):
         self.component_manager.register_component(GrowVortextComponent())
         self.component_manager.register_component(TrapComponent())
         self.component_manager.register_component(HideComponent())
+        self.component_manager.register_component(AIActionComponent())
+        self.component_manager.register_component(AIMovementComponent())
         
         self.entity_manager = EntityManager()
             
@@ -104,6 +108,10 @@ class Game(object):
         self.entity_manager.add_entity(Entity("actionui-player1"))
         self.entity_manager.add_entity(Entity("actionui-player2"))
         self.entity_manager.add_entity(Entity("timerui"))
+        
+        self.entity_manager.add_entity(Entity('aiplayer1'))
+        self.entity_manager.add_entity(Entity('aiplayer2'))
+        
         
         self.renderer.createBackground()
 

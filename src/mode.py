@@ -16,10 +16,12 @@ class AttractMode(object):
             game.get_game().change_mode(PlayMode())
         
     def update(self, dt):
-        pass
+        for entity in game.get_game().entity_manager.get_by_tag('aiplayer'):
+            entity.handle('update', dt)
     
     def draw(self):
-        game.get_game().renderer.render_title()
+        for entity in game.get_game().entity_manager.get_by_tag('aiplayer'):
+            entity.handle('draw')
     
 
 class PlayMode(object):
